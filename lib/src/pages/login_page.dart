@@ -1,3 +1,5 @@
+import 'package:app_studydesk/src/services/auth_service.dart';
+import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -8,6 +10,18 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _authService = AuthService();
+  final _userPreferences = UserPreferences();
+  var _email = "";
+  var _passw = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _initPreferences();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,11 +96,11 @@ class _LoginPageState extends State<LoginPage> {
   Widget _emailField() {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: const TextField(
-          keyboardType: TextInputType.emailAddress,
+        child: TextField(
+          keyboardType:  TextInputType.emailAddress,
           cursorColor: Colors.white,
-          style: TextStyle(color: Colors.white),
-          decoration: InputDecoration(
+          style: const TextStyle(color: Colors.white),
+          decoration: const InputDecoration(
               focusColor: Colors.white,
               hoverColor: Colors.white,
               fillColor: Color.fromRGBO(255, 255, 255, 0.25),
@@ -98,17 +112,22 @@ class _LoginPageState extends State<LoginPage> {
               hintStyle: TextStyle(color: Colors.white60),
               labelStyle: TextStyle(color: Colors.white),
           ),
+          onChanged: (value){
+            setState(() {
+              _email = value;
+            });
+          },
         ));
   }
 
   Widget _passwordField() {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: const TextField(
+        child: TextField(
           obscureText: true,
           cursorColor: Colors.white,
-          style: TextStyle(color: Colors.white),
-          decoration: InputDecoration(
+          style: const TextStyle(color: Colors.white),
+          decoration: const InputDecoration(
             focusColor: Colors.white,
             hoverColor: Colors.white,
             fillColor: Color.fromRGBO(255, 255, 255, 0.25),
@@ -120,7 +139,13 @@ class _LoginPageState extends State<LoginPage> {
             hintStyle: TextStyle(color: Colors.white60),
             labelStyle: TextStyle(color: Colors.white),
           ),
-        ));
+          onChanged: (value){
+            setState(() {
+              _passw = value;
+            });
+          },
+        )
+    );
   }
 
   Widget _buttonsOptions(BuildContext context){
@@ -133,11 +158,7 @@ class _LoginPageState extends State<LoginPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           ElevatedButton(
-            onPressed: (){
-
-              Navigator.of(context).pushNamed('/home');
-
-            },
+            onPressed: _authenticateUser,
             child: const Text('INGRESAR'),
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
@@ -162,4 +183,62 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
+  void _authenticateUser() async{
+
+
+    final response = await _authService.logginUser(_email, _passw);
+    //print(response);
+    if(response['ok']){
+      Navigator.of(context).pushReplacementNamed('/home');
+    }
+    else{
+      _showAlert(context);
+    }
+
+      //Navigator.of(context).pushNamed('/home');
+
+
+  }
+
+  void _initPreferences() async {
+    await _userPreferences.initPrefs();
+  }
 }
+
+void _showAlert(BuildContext context) {
+  showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Error al iniciar sesión'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const Text('El correo o contraseña ingresada es incorrecto.'),
+              Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: const Image(
+                    image: AssetImage('assets/images/login_fail.png'),
+                  )
+              )
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Ok')),
+            TextButton(
+                onPressed: () {
+
+                },
+                child: const Text('Olvidé mi contraseña'))
+          ],
+        );
+      }
+  );
+}
+
