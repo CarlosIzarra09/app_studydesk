@@ -12,31 +12,130 @@ class HomePage extends StatelessWidget {
       ),
       body: ListView(
         children: <Widget>[
-          _routeButtons(context),
+          //_routeButtons(context),
+          Container(
+            height: 160,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const <Widget>[
+                Image(image: AssetImage("assets/images/avatar.png"),
+                  height: 120,
+                ),
+                SizedBox(width: 15,),
+                Image(image: AssetImage("assets/texts/studydesk_title_logo.png"),
+                width: 240,
+                )
+              ],
+            ),
+          ),
+
+
+          _optionContainer(context,
+              "assets/images/contacts_net.png",
+              "SUBIR DOCUMENTOS",
+              "Comparte tus documentos y apuntes",
+              const Color.fromRGBO(111, 208, 253, 1),
+              //manda tu ruta por aqui
+              "/home"),
+          _optionContainer(context,
+              "assets/images/findsearch.png",
+              "SISTEMA DE BÚSQUEDA",
+              "Encuentra documentos de tu carrera universitaria y también tutores",
+              Colors.white,
+              "/home"),
+          _optionContainer(context,
+              "assets/images/students_pc.png",
+              "CONVIERTETE EN TUTOR",
+              "Comparte tus conocimientos y cobra por ello",
+              const Color.fromRGBO(111, 208, 253, 1),
+              "/home"),
         ],
       ),
     );
   }
 
-  Widget _routeButtons(BuildContext context) {
+  Widget _optionContainer(BuildContext context,
+      String imgPath, String txtbutton, String description,
+      Color myColor, String route) {
+    return Container(
+      //width: double.infinity,
+      color: myColor,
+      height: 180,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                height: 180,
+                width: 180,
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Image(
+                  image: AssetImage(imgPath),
+
+                ),
+              )
+            ],
+          ),
+
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+
+            children: <Widget>[
+              const Expanded(child: SizedBox()),
+
+              LimitedBox(
+                maxWidth: 160,
+                  child: Text(description,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 15),
+                  )
+              ),
+
+              const Expanded(child: SizedBox()),
+              Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            const Color.fromRGBO(56, 72, 171, 1)),
+                      ),
+                      onPressed: () {
+
+                        //TODO: De esta manera me muevo a una ruta con nombre
+                        Navigator.of(context).pushNamed(route);
+
+                      },
+                      child: Text(txtbutton,
+                      )
+                  )
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+ /* Widget _routeButtons(BuildContext context) {
     return Row(
       children: <Widget>[
         ElevatedButton(
           child: const Text('ver documentos'),
-          onPressed: (){
-            //TODO: De esta manera me muevo a una ruta con nombre
+          onPressed: () {
+            // De esta manera me muevo a una ruta con nombre
             //Navigator.of(context).pushNamed('/home');
-          }, ),
-
+          },
+        ),
         const Expanded(child: SizedBox()),
-
         ElevatedButton(
           child: const Text('buscar documentos'),
-          onPressed: (){
+          onPressed: () {
             //Navigator.of(context).pushNamed('/home');
-
-          }, ),
+          },
+        ),
       ],
     );
-  }
+  }*/
 }
