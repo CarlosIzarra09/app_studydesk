@@ -36,7 +36,7 @@ class HomePage extends StatelessWidget {
               "Comparte tus documentos y apuntes",
               const Color.fromRGBO(111, 208, 253, 1),
               //manda tu ruta por aqui
-              "/home"),
+              "/upload"),
           _optionContainer(context,
               "assets/images/findsearch.png",
               "SISTEMA DE BÚSQUEDA",
