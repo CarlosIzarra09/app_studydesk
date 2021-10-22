@@ -1,4 +1,5 @@
 import 'package:app_studydesk/src/services/auth_service.dart';
+import 'package:app_studydesk/src/services/user_service.dart';
 import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _authService = AuthService();
+  final _userService = UserService();
   final _userPreferences = UserPreferences();
   var _email = "";
   var _passw = "";
@@ -149,10 +151,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _buttonsOptions(BuildContext context){
-    final size = MediaQuery.of(context).size;
+    //final size = MediaQuery.of(context).size;
 
     return Container(
-      width: size.width,
+      width: double.infinity,
       margin: const EdgeInsets.only(top: 580),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -171,7 +173,10 @@ class _LoginPageState extends State<LoginPage> {
           style: TextStyle(color: Colors.white,fontSize: 18),),
           const SizedBox(height: 50,),
           ElevatedButton(
-            onPressed: (){},
+            onPressed: (){
+
+              Navigator.of(context).pushNamed('/register');
+            },
             child: const Text('CREAR UNA CUENTA'),
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(
@@ -190,6 +195,7 @@ class _LoginPageState extends State<LoginPage> {
     final response = await _authService.logginUser(_email, _passw);
     //print(response);
     if(response['ok']){
+      await _userService.getUser(response['id']);
       Navigator.of(context).pushReplacementNamed('/home');
     }
     else{

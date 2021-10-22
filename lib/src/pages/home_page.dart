@@ -1,14 +1,18 @@
+import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
-  final String user_name = 'Josias';
+
 
   @override
   Widget build(BuildContext context) {
+
+    final UserPreferences _userPreferences = UserPreferences();
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bienvenido, $user_name'),
+        title: Text('Bienvenido, ${_userPreferences.name}'),
       ),
       body: ListView(
         children: <Widget>[
@@ -42,7 +46,7 @@ class HomePage extends StatelessWidget {
               "SISTEMA DE BÚSQUEDA",
               "Encuentra documentos de tu carrera universitaria y también tutores",
               Colors.white,
-              "/home"),
+              "/finddocuments"),
           _optionContainer(context,
               "assets/images/students_pc.png",
               "CONVIERTETE EN TUTOR",
