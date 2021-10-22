@@ -19,7 +19,6 @@ class UserService{
 
     Map<String,dynamic> decodeResp = json.decode(resp.body);
 
-    print(decodeResp);
     if(decodeResp.containsKey('name'))
     {
       //Guardar su nombre xd, es que aun no nos enseña sqlLite aqui

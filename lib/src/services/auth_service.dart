@@ -29,11 +29,38 @@ class AuthService{
     {
       //Guardar el token
       _prefs.Token = decodeResp['token'];
-      return {'ok':true,'token':decodeResp['token']};
+      return {'ok':true,'id':decodeResp['id'],'token':decodeResp['token']};
     }
     else{
       //no guardo el usuario o ya existe
       return {'ok':false,'mensaje':decodeResp['message']};
+    }
+  }
+
+  Future<Map<String,dynamic>> signUpUser(var dataUser,int careerId) async
+  {
+    Uri url = Uri.parse('$_dataUrl/api/careers/$careerId/students');
+
+
+    final resp = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: json.encode(dataUser)
+    );
+
+
+    Map<String,dynamic> decodeResp = json.decode(resp.body);
+
+    //print(decodeResp);
+    if(decodeResp.containsKey('id'))
+    {
+      //Guardar el token
+      _prefs.Name = decodeResp['name'];
+      return {'ok':true};
+    }
+    else{
+      //no guardo el usuario o ya existe
+      return {'ok':false};
     }
   }
 }
