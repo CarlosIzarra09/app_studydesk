@@ -94,7 +94,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget _makeBackground(BuildContext context) {
     return Column(
       children: <Widget>[
-        Container(
+        /*Container(
           margin: const EdgeInsets.only(top: 20),
           child: const Image(
             image: AssetImage('assets/images/avatar.png'),
@@ -107,7 +107,7 @@ class _RegisterPageState extends State<RegisterPage> {
             image: AssetImage('assets/texts/studydesk_title_logo.png'),
             height: 70,
           ),
-        ),
+        ),*/
         Container(
           width: double.infinity,
           margin: const EdgeInsets.only(top: 50),

@@ -28,12 +28,17 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        children: <Widget>[
-          _makeBackground(context),
-          _loginForm(context),
-          _buttonsOptions(context)
-        ],
-      ),
+          children: <Widget>[
+            _makeBackground(context),
+            ListView(
+              children: [
+                _loginForm(context),
+                _buttonsOptions(context)
+              ],
+            )
+
+          ],
+        ),
     );
   }
 
@@ -81,10 +86,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _loginForm(BuildContext context) {
-    return SingleChildScrollView(
+    return Container(
+      margin: const EdgeInsets.only(top:130),
       child: Column(
         children: <Widget>[
-          SafeArea(child: Container(height: 150,)),
+          //SafeArea(child: Container(height: 150,)),
           SizedBox(height: 250,),
           _emailField(),
           SizedBox(height: 20,),
@@ -154,38 +160,38 @@ class _LoginPageState extends State<LoginPage> {
     //final size = MediaQuery.of(context).size;
 
     return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(top: 580),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          ElevatedButton(
-            onPressed: _authenticateUser,
-            child: const Text('INGRESAR'),
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                    const Color.fromRGBO(56, 72, 171, 1)
-                ),
-            ),
-          ),
-          const SizedBox(height: 10,),
-          const Text('¿No tienes una cuenta aún?',
-          style: TextStyle(color: Colors.white,fontSize: 18),),
-          const SizedBox(height: 50,),
-          ElevatedButton(
-            onPressed: (){
-
-              Navigator.of(context).pushNamed('/register');
-            },
-            child: const Text('CREAR UNA CUENTA'),
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(
-                  Colors.red
+        width: double.infinity,
+        margin: const EdgeInsets.only(top: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            ElevatedButton(
+              onPressed: _authenticateUser,
+              child: const Text('INGRESAR'),
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      const Color.fromRGBO(56, 72, 171, 1)
+                  ),
               ),
             ),
-          ),
-        ],
-      ),
+            const SizedBox(height: 10,),
+            const Text('¿No tienes una cuenta aún?',
+            style: TextStyle(color: Colors.white,fontSize: 18),),
+            const SizedBox(height: 50,),
+            ElevatedButton(
+              onPressed: (){
+
+                Navigator.of(context).pushNamed('/register');
+              },
+              child: const Text('CREAR UNA CUENTA'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Colors.red
+                ),
+              ),
+            ),
+          ],
+        ),
     );
   }
 
