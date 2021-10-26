@@ -14,25 +14,34 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _authService = AuthService();
-  final _userService = UserService();
+  //final _userService = UserService();
   final _instituteService = InstituteService();
   final _careerService = CareerService();
   //final _userPreferences = UserPreferences();
-  var _name = "";
-  var _lastname = "";
-  var _email = "";
-  var _passw = "";
+
+  TextEditingController _nameCtrl = TextEditingController();
+  TextEditingController _lastnameCtrl = TextEditingController();
+  TextEditingController _emailCtrl = TextEditingController();
+  TextEditingController _passwCtrl = TextEditingController();
+
   int _currentStep = 0;
   Map<String, dynamic> _valueUniversity = {"id": 1, "name": "UPC"};
   Map<String, dynamic> _valueCareer = {"id": 1, "name": "Ingenieria"};
   List<dynamic> _universities = [];
   List<dynamic> _careers = [];
 
+  final _formKeyAccount = GlobalKey<FormState>();
+  Pattern pattern =
+      r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+      r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+      r"{0,253}[a-zA-Z0-9])?)*$";
+  late RegExp regex;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    regex = RegExp(pattern.toString());
     getUniversities();
   }
 
@@ -48,8 +57,11 @@ class _RegisterPageState extends State<RegisterPage> {
           currentStep: _currentStep,
           onStepContinue: () {
             setState(() {
+
               if(_currentStep == 0){
-                _currentStep++;
+                if(_formKeyAccount.currentState!.validate()) {
+                  _currentStep++;
+                }
               }
               else{
                 _signUpUser();
@@ -144,25 +156,29 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Widget _registerFirstForm(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        _nameField(),
-        const SizedBox(
-          height: 20,
-        ),
-        _lastnameField(),
-        const SizedBox(
-          height: 20,
-        ),
-        _emailField(),
-        const SizedBox(
-          height: 20,
-        ),
-        _passwordField(),
-        const SizedBox(
-          height: 20,
-        ),
-      ],
+    return Form(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      key: _formKeyAccount,
+      child: Column(
+        children: <Widget>[
+          _nameFormField(),
+          const SizedBox(
+            height: 20,
+          ),
+          _lastnameFormField(),
+          const SizedBox(
+            height: 20,
+          ),
+          _emailFormField(),
+          const SizedBox(
+            height: 20,
+          ),
+          _passwordFormField(),
+          const SizedBox(
+            height: 20,
+          ),
+        ],
+      ),
     );
   }
 
@@ -185,6 +201,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(5)),
                 child: DropdownButton<Map<String, dynamic>>(
+                  borderRadius: BorderRadius.circular(5),
+                  menuMaxHeight: 250,
                   underline: const SizedBox(),
                   value: _valueUniversity,
                   isExpanded: true,
@@ -226,6 +244,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(5)),
                 child: DropdownButton<Map<String, dynamic>>(
+                  borderRadius: BorderRadius.circular(5),
                   underline: const SizedBox(),
                   value: _valueCareer,
                   isExpanded: true,
@@ -249,6 +268,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ],
           ),
+          
           const SizedBox(
             height: 20,
           ),
@@ -257,10 +277,11 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _nameField() {
+  Widget _nameFormField() {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: TextField(
+        child: TextFormField(
+          controller: _nameCtrl,
           textCapitalization: TextCapitalization.sentences,
           keyboardType: TextInputType.name,
           cursorColor: Colors.white,
@@ -279,18 +300,22 @@ class _RegisterPageState extends State<RegisterPage> {
             hintStyle: TextStyle(color: Colors.white60),
             labelStyle: TextStyle(color: Colors.white),
           ),
-          onChanged: (value) {
-            setState(() {
-              _name = value;
-            });
+          validator: (value){
+            if (value == null || value.isEmpty) {
+              return 'Por favor ingrese su nombre';
+            }
+            return null;
           },
-        ));
+
+        )
+    );
   }
 
-  Widget _lastnameField() {
+  Widget _lastnameFormField() {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: TextField(
+        child: TextFormField(
+          controller: _lastnameCtrl,
           textCapitalization: TextCapitalization.sentences,
           keyboardType: TextInputType.name,
           cursorColor: Colors.white,
@@ -309,18 +334,21 @@ class _RegisterPageState extends State<RegisterPage> {
             hintStyle: TextStyle(color: Colors.white60),
             labelStyle: TextStyle(color: Colors.white),
           ),
-          onChanged: (value) {
-            setState(() {
-              _lastname = value;
-            });
+          validator: (value){
+            if (value == null || value.isEmpty) {
+              return 'Por favor ingrese sus Apellidos';
+            }
+            return null;
           },
+
         ));
   }
 
-  Widget _emailField() {
+  Widget _emailFormField() {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: TextField(
+        child: TextFormField(
+          controller: _emailCtrl,
           keyboardType: TextInputType.emailAddress,
           cursorColor: Colors.white,
           style: const TextStyle(color: Colors.white),
@@ -339,18 +367,28 @@ class _RegisterPageState extends State<RegisterPage> {
             hintStyle: TextStyle(color: Colors.white60),
             labelStyle: TextStyle(color: Colors.white),
           ),
-          onChanged: (value) {
-            setState(() {
-              _email = value;
-            });
+          validator: (value){
+            if (value == null || value.isEmpty) {
+              return 'Por favor ingrese su correo';
+            }
+            else{
+              if(!regex.hasMatch(value)) {
+                return "Por favor ingrese un email valido";
+              }
+            }
+
+            return null;
           },
+
+
         ));
   }
 
-  Widget _passwordField() {
+  Widget _passwordFormField() {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: TextField(
+        child: TextFormField(
+          controller: _passwCtrl,
           obscureText: true,
           cursorColor: Colors.white,
           style: const TextStyle(color: Colors.white),
@@ -369,11 +407,13 @@ class _RegisterPageState extends State<RegisterPage> {
             hintStyle: TextStyle(color: Colors.white60),
             labelStyle: TextStyle(color: Colors.white),
           ),
-          onChanged: (value) {
-            setState(() {
-              _passw = value;
-            });
+          validator: (value){
+            if (value == null || value.isEmpty) {
+              return 'Por favor ingrese su contraseña';
+            }
+            return null;
           },
+
         ));
   }
 
@@ -381,16 +421,20 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _signUpUser() async {
     final dataUser ={
-      "name": _name,
-      "lastName": _lastname,
+      "name": _nameCtrl.text,
+      "lastName": _lastnameCtrl.text,
       "logo": "string",
-      "email": _email,
-      "password": _passw};
+      "email": _emailCtrl.text,
+      "password": _passwCtrl.text};
 
     final response = await _authService.signUpUser(dataUser, _valueCareer['id']);
     //print(response);
     if (response['ok']) {
-      Navigator.of(context).pushReplacementNamed('/home');
+      //Navigator.of(context).pushReplacementNamed('/home');
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+      //guardamos su token
+      await _authService.logginUser(_emailCtrl.text, _passwCtrl.text);
     } else {
       _showAlert(context);
     }

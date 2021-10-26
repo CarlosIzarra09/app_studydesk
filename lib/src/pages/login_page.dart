@@ -14,6 +14,13 @@ class _LoginPageState extends State<LoginPage> {
   final _authService = AuthService();
   final _userService = UserService();
   final _userPreferences = UserPreferences();
+  final _formKey = GlobalKey<FormState>();
+  Pattern pattern =
+      r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+      r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+      r"{0,253}[a-zA-Z0-9])?)*$";
+  late RegExp regex;
+
   var _email = "";
   var _passw = "";
 
@@ -21,13 +28,14 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    regex = RegExp(pattern.toString());
     _initPreferences();
   }
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      /*body: Stack(
           children: <Widget>[
             _makeBackground(context),
             ListView(
@@ -38,7 +46,8 @@ class _LoginPageState extends State<LoginPage> {
             )
 
           ],
-        ),
+        ),*/
+      body: _makeBackground(context),
     );
   }
 
@@ -62,12 +71,11 @@ class _LoginPageState extends State<LoginPage> {
         Container(
           margin: const EdgeInsets.only(top: 50),
           color: Colors.lightBlueAccent,
-          height: 460,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const <Widget>[
-              Padding(
+          //height: 800,
+          //height: 460,
+          child: Column(
+            children:  <Widget>[
+              const Padding(
                 padding: EdgeInsets.only(top: 20),
                 child: Text('INICIAR SESION',
                   style: TextStyle(
@@ -77,7 +85,9 @@ class _LoginPageState extends State<LoginPage> {
                   ),
 
                 ),
-              )
+              ),
+              _loginForm(context),
+              _buttonsOptions(context)
             ],
           ),
         )
@@ -86,25 +96,24 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _loginForm(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top:130),
+    return Form(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      key: _formKey,
       child: Column(
         children: <Widget>[
-          //SafeArea(child: Container(height: 150,)),
-          SizedBox(height: 250,),
-          _emailField(),
-          SizedBox(height: 20,),
-          _passwordField(),
+          const SizedBox(height: 40,),
+          _emailFormField(),
+          const SizedBox(height: 20,),
+          _passwordFormField(),
         ],
-      ),
-
+      ) ,
     );
   }
 
-  Widget _emailField() {
+  Widget _emailFormField() {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: TextField(
+        child: TextFormField(
           keyboardType:  TextInputType.emailAddress,
           cursorColor: Colors.white,
           style: const TextStyle(color: Colors.white),
@@ -120,6 +129,18 @@ class _LoginPageState extends State<LoginPage> {
               hintStyle: TextStyle(color: Colors.white60),
               labelStyle: TextStyle(color: Colors.white),
           ),
+          validator: (value){
+            if (value == null || value.isEmpty) {
+              return 'Por favor ingrese su correo';
+            }
+            else{
+              if(!regex.hasMatch(value)) {
+                return "Por favor ingrese un email valido";
+              }
+            }
+
+            return null;
+          },
           onChanged: (value){
             setState(() {
               _email = value;
@@ -128,10 +149,10 @@ class _LoginPageState extends State<LoginPage> {
         ));
   }
 
-  Widget _passwordField() {
+  Widget _passwordFormField() {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: TextField(
+        child: TextFormField(
           obscureText: true,
           cursorColor: Colors.white,
           style: const TextStyle(color: Colors.white),
@@ -147,6 +168,12 @@ class _LoginPageState extends State<LoginPage> {
             hintStyle: TextStyle(color: Colors.white60),
             labelStyle: TextStyle(color: Colors.white),
           ),
+          validator: (value){
+            if (value == null || value.isEmpty) {
+              return 'Por favor ingrese su contraseña';
+            }
+            return null;
+          },
           onChanged: (value){
             setState(() {
               _passw = value;
@@ -190,6 +217,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
+            const SizedBox(height: 40,),
           ],
         ),
     );
@@ -197,19 +225,18 @@ class _LoginPageState extends State<LoginPage> {
 
   void _authenticateUser() async{
 
+    if(_formKey.currentState!.validate()) {
+      final response = await _authService.logginUser(_email, _passw);
+      //print(response);
+      if(response['ok']){
+        await _userService.getUser(response['id']);
+        Navigator.of(context).pushReplacementNamed('/home');
+      }
+      else{
+        _showAlert(context);
+      }
 
-    final response = await _authService.logginUser(_email, _passw);
-    //print(response);
-    if(response['ok']){
-      await _userService.getUser(response['id']);
-      Navigator.of(context).pushReplacementNamed('/home');
     }
-    else{
-      _showAlert(context);
-    }
-
-      //Navigator.of(context).pushNamed('/home');
-
 
   }
 
