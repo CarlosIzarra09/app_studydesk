@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app_studydesk/src/models/authenticate.dart';
 import 'package:app_studydesk/src/models/career.dart';
 import 'package:app_studydesk/src/models/institute.dart';
@@ -5,7 +7,9 @@ import 'package:app_studydesk/src/models/user.dart';
 import 'package:app_studydesk/src/services/auth_service.dart';
 import 'package:app_studydesk/src/services/career_service.dart';
 import 'package:app_studydesk/src/services/institute_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -25,6 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwCtrl = TextEditingController();
 
   int _currentStep = 0;
+  File? photo;
 
   Institute _valueUniversity = Institute(id: 0, name: "none");
   Career _valueCareer = Career(id: 0, name: "none");
@@ -34,6 +39,7 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _isLoadingValues = false;
 
   final _formKeyAccount = GlobalKey<FormState>();
+  final _imagePicker = ImagePicker();
   Pattern pattern =
       r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
       r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
@@ -93,7 +99,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 const Expanded(child: SizedBox()),
                 ElevatedButton(
-                  onPressed: (_valueCareer.name != "")?onStepContinue:null,
+                  onPressed: (_valueCareer.name != "" && _isLoadingValues ==false)?onStepContinue:null,
                   child: _currentStep == 0
                       ? const Text('CONTINUAR')
                       : const Text('FINALIZAR'),
@@ -190,8 +196,48 @@ class _RegisterPageState extends State<RegisterPage> {
       margin: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: <Widget>[
-          Row(
-            
+          Stack(
+            children: <Widget>[
+              Center(
+                child: Card(
+                  shape: const CircleBorder(
+                    side: BorderSide(color: Colors.white, width: 5.0),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: (photo == null) ? const Image(
+                    image: AssetImage("assets/images/placeholder_account.jpg"),
+                    fit: BoxFit.cover,
+                    height: 250,
+                    width: 250,
+                  ):Image.file(
+                    photo!,
+                    width: 250,
+                    height: 250,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 200,left: 150),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(),
+                      padding: const EdgeInsets.all(10),
+                      primary: Colors.blue, // <-- Button color
+                      onPrimary: Colors.white, // <-- Splash color
+                    ),
+                    child: const Icon(Icons.photo_camera,size: 30,),
+                    onPressed: _selectImage,
+                  ),
+                ),
+              )
+
+            ],
+          ),
+
+          const SizedBox(
+            height: 20,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -208,7 +254,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     borderRadius: BorderRadius.circular(5)),
                 child: DropdownButton<Institute>(
                   borderRadius: BorderRadius.circular(5),
-                  menuMaxHeight: 250,
+                  menuMaxHeight: 550,
                   underline: const SizedBox(),
                   value: _valueUniversity,
                   isExpanded: true,
@@ -251,6 +297,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(5)),
                 child: DropdownButton<Career>(
+                  menuMaxHeight: 600,
                   disabledHint: Text(_valueCareer.name),
                   borderRadius: BorderRadius.circular(5),
                   underline: const SizedBox(),
@@ -501,6 +548,20 @@ class _RegisterPageState extends State<RegisterPage> {
     });
 
     _isLoadingValues = false;
+  }
+
+  void _selectImage() async {
+    var photoTemp = await _imagePicker.pickImage(
+        source: ImageSource.gallery
+    );
+
+    if(photoTemp != null) {
+      setState(() {
+        photo = File(photoTemp.path);
+      });
+
+    }
+
   }
 }
 
