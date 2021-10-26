@@ -21,7 +21,7 @@ class UserService{
 
     if(decodeResp.containsKey('name'))
     {
-      //Guardar su nombre xd, es que aun no nos enseña sqlLite aqui
+      //Guardar su nombre xd, es que aun no nos enseña sqlLite
       //y la libreria que conozco talvez sea diferente
 
       _prefs.Name = decodeResp['name'];

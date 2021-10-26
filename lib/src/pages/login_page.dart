@@ -1,3 +1,4 @@
+import 'package:app_studydesk/src/models/authenticate.dart';
 import 'package:app_studydesk/src/services/auth_service.dart';
 import 'package:app_studydesk/src/services/user_service.dart';
 import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
@@ -226,7 +227,7 @@ class _LoginPageState extends State<LoginPage> {
   void _authenticateUser() async{
 
     if(_formKey.currentState!.validate()) {
-      final response = await _authService.logginUser(_email, _passw);
+      final response = await _authService.logginUser(Authenticate(email: _email, password: _passw));
       //print(response);
       if(response['ok']){
         await _userService.getUser(response['id']);

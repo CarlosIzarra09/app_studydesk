@@ -1,8 +1,10 @@
+import 'package:app_studydesk/src/models/authenticate.dart';
+import 'package:app_studydesk/src/models/career.dart';
+import 'package:app_studydesk/src/models/institute.dart';
+import 'package:app_studydesk/src/models/user.dart';
 import 'package:app_studydesk/src/services/auth_service.dart';
 import 'package:app_studydesk/src/services/career_service.dart';
 import 'package:app_studydesk/src/services/institute_service.dart';
-import 'package:app_studydesk/src/services/user_service.dart';
-import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -14,21 +16,22 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _authService = AuthService();
-  //final _userService = UserService();
   final _instituteService = InstituteService();
   final _careerService = CareerService();
-  //final _userPreferences = UserPreferences();
-
-  TextEditingController _nameCtrl = TextEditingController();
-  TextEditingController _lastnameCtrl = TextEditingController();
-  TextEditingController _emailCtrl = TextEditingController();
-  TextEditingController _passwCtrl = TextEditingController();
+  
+  final TextEditingController _nameCtrl = TextEditingController();
+  final TextEditingController _lastnameCtrl = TextEditingController();
+  final TextEditingController _emailCtrl = TextEditingController();
+  final TextEditingController _passwCtrl = TextEditingController();
 
   int _currentStep = 0;
-  Map<String, dynamic> _valueUniversity = {"id": 1, "name": "UPC"};
-  Map<String, dynamic> _valueCareer = {"id": 1, "name": "Ingenieria"};
-  List<dynamic> _universities = [];
-  List<dynamic> _careers = [];
+
+  Institute _valueUniversity = Institute(id: 0, name: "none");
+  Career _valueCareer = Career(id: 0, name: "none");
+
+  List<Institute> _universities = [];
+  List<Career> _careers = [];
+  bool _isLoadingValues = false;
 
   final _formKeyAccount = GlobalKey<FormState>();
   Pattern pattern =
@@ -90,7 +93,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 const Expanded(child: SizedBox()),
                 ElevatedButton(
-                  onPressed: onStepContinue,
+                  onPressed: (_valueCareer.name != "")?onStepContinue:null,
                   child: _currentStep == 0
                       ? const Text('CONTINUAR')
                       : const Text('FINALIZAR'),
@@ -142,7 +145,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ],
               ),
               Container(
-                margin: EdgeInsets.only(top: 30),
+                margin: const EdgeInsets.only(top: 30),
                 width: double.infinity,
                 child: _currentStep == 0
                     ? _registerFirstForm(context)
@@ -188,6 +191,9 @@ class _RegisterPageState extends State<RegisterPage> {
       child: Column(
         children: <Widget>[
           Row(
+            
+          ),
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
@@ -200,23 +206,24 @@ class _RegisterPageState extends State<RegisterPage> {
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(5)),
-                child: DropdownButton<Map<String, dynamic>>(
+                child: DropdownButton<Institute>(
                   borderRadius: BorderRadius.circular(5),
                   menuMaxHeight: 250,
                   underline: const SizedBox(),
                   value: _valueUniversity,
                   isExpanded: true,
                   items: _universities
-                      .map<DropdownMenuItem<Map<String, dynamic>>>((item) {
-                    return DropdownMenuItem<Map<String, dynamic>>(
+                      .map<DropdownMenuItem<Institute>>((item) {
+                    return DropdownMenuItem<Institute>(
                       value: item,
-                      child: Text(item['name']),
+                      child: Text(item.name),
                     );
                   }).toList(),
                   onChanged: (value) {
                     setState(() {
-                      getCareers(value!['id']);
-                      _valueUniversity = value;
+                      _valueUniversity = value!;
+                      _isLoadingValues = true;
+                      getCareers(value.id);
                     });
                   },
                   icon: const Icon(
@@ -243,19 +250,20 @@ class _RegisterPageState extends State<RegisterPage> {
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(5)),
-                child: DropdownButton<Map<String, dynamic>>(
+                child: DropdownButton<Career>(
+                  disabledHint: Text(_valueCareer.name),
                   borderRadius: BorderRadius.circular(5),
                   underline: const SizedBox(),
                   value: _valueCareer,
                   isExpanded: true,
                   items: _careers
-                      .map<DropdownMenuItem<Map<String, dynamic>>>((item) {
-                    return DropdownMenuItem<Map<String, dynamic>>(
+                      .map<DropdownMenuItem<Career>>((item) {
+                    return DropdownMenuItem<Career>(
                       value: item,
-                      child: Text(item['name']),
+                      child: Text(item.name),
                     );
                   }).toList(),
-                  onChanged: (value) {
+                  onChanged: (_isLoadingValues || _valueCareer.name=="")? null :(value) {
                     setState(() {
                       _valueCareer = value!;
                     });
@@ -420,21 +428,30 @@ class _RegisterPageState extends State<RegisterPage> {
 
 
   void _signUpUser() async {
-    final dataUser ={
-      "name": _nameCtrl.text,
-      "lastName": _lastnameCtrl.text,
-      "logo": "string",
-      "email": _emailCtrl.text,
-      "password": _passwCtrl.text};
+    
+    final User dataUser = User(
+        name: _nameCtrl.text, 
+        lastName: _lastnameCtrl.text, 
+        logo: "logo.png", 
+        email: _emailCtrl.text, 
+        password: _passwCtrl.text);
+    
 
-    final response = await _authService.signUpUser(dataUser, _valueCareer['id']);
+    final response = await _authService.signUpUser(dataUser, _valueCareer.id);
     //print(response);
     if (response['ok']) {
-      //Navigator.of(context).pushReplacementNamed('/home');
+
+      final Authenticate authenticate = Authenticate(
+          email: _emailCtrl.text,
+          password: _passwCtrl.text);
+
+      //guardamos su token
+      await _authService.logginUser(authenticate);
+      
       Navigator.of(context)
           .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
-      //guardamos su token
-      await _authService.logginUser(_emailCtrl.text, _passwCtrl.text);
+      
+      
     } else {
       _showAlert(context);
     }
@@ -445,36 +462,45 @@ class _RegisterPageState extends State<RegisterPage> {
   List<Step> getSteps() => [
         Step(
           isActive: _currentStep >= 0,
-          title: Text('Cuenta'),
+          title: const Text('Cuenta'),
           content: _makeBackground(context),
         ),
         Step(
           isActive: _currentStep >= 1,
-          title: Text('Informacion adicional'),
+          title: const Text('Informacion adicional'),
           content: _makeBackground(context),
         )
       ];
 
   void getUniversities() async {
     var univResponse = await _instituteService.getAllInstitutes();
-    _universities = univResponse['institutes'];
-    _valueUniversity = _universities[0];
-    getCareers(_valueUniversity['id']);
+    setState(() {
+      _universities = (univResponse['institutes'] as List)
+          .map((item) => Institute.fromJson(item)).toList();
+
+      _valueUniversity = _universities.first;
+    });
+
+    getCareers(_valueUniversity.id);
   }
 
   void getCareers(int id) async {
     var careerResponse = await _careerService.getCareersByInstituteId(id);
     setState(() {
       if (careerResponse['ok']) {
-        _careers = careerResponse['careers'];
-        _valueCareer = _careers[0];
+        _careers = (careerResponse['careers'] as List)
+            .map((item) => Career.fromJson(item)).toList();
+
+        _valueCareer = _careers.first;
       } else {
         _careers = [
-          {'id': -1, 'name': ""}
+          Career(id: 0, name: "")
         ];
-        _valueCareer = _careers[0];
+        _valueCareer = _careers.first;
       }
     });
+
+    _isLoadingValues = false;
   }
 }
 

@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:app_studydesk/src/models/authenticate.dart';
+import 'package:app_studydesk/src/models/user.dart';
 import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -6,19 +8,16 @@ class AuthService{
   final _prefs = UserPreferences();
   final String _dataUrl = "https://studydeskapi.azurewebsites.net";
 
-  Future<Map<String,dynamic>> logginUser(String email, String password) async
+  Future<Map<String,dynamic>> logginUser(Authenticate user) async
   {
     Uri url = Uri.parse('$_dataUrl/api/users/authenticate');
-    final authData = {
-      "email": email,
-      "password":password,
-    };
+
 
 
     final resp = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
-        body: json.encode(authData)
+        body: authenticateToJson(user),
     );
 
 
@@ -37,7 +36,7 @@ class AuthService{
     }
   }
 
-  Future<Map<String,dynamic>> signUpUser(var dataUser,int careerId) async
+  Future<Map<String,dynamic>> signUpUser(User dataUser,int careerId) async
   {
     Uri url = Uri.parse('$_dataUrl/api/careers/$careerId/students');
 
@@ -45,7 +44,7 @@ class AuthService{
     final resp = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
-        body: json.encode(dataUser)
+        body: userToJson(dataUser)
     );
 
 
