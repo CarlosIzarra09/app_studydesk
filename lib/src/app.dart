@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'pages/home_page.dart';
 import 'pages/login_page.dart';
 import 'pages/register_page.dart';
+import 'pages/upload_documents.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
         '/login':(BuildContext context)=>const LoginPage(),
         '/register':(BuildContext context)=>const RegisterPage(),
         '/home':(BuildContext context)=>const HomePage(),
-        //'/finddocuments':(BuildContext context)=> const FindDocumentsPage(),
+        '/upload': (BuildContext context) => const UploadDocumentsPage(),
       },
     );
   }
