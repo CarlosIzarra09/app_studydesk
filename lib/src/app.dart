@@ -1,4 +1,5 @@
 
+import 'package:app_studydesk/src/pages/download_page.dart';
 import 'package:flutter/material.dart';
 
 import 'pages/home_page.dart';
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/login',
+      initialRoute: '/download',
       routes: {
         //Aqui agregan sus rutas
 
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         '/register':(BuildContext context)=>const RegisterPage(),
         '/home':(BuildContext context)=>const HomePage(),
         '/upload': (BuildContext context) => const UploadDocumentsPage(),
+        '/download': (BuildContext context) => const DownloadPage(),
       },
     );
   }

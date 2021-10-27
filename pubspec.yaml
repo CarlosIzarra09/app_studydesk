@@ -39,8 +39,9 @@ dependencies:
   http: ^0.13.4
   mime_type: ^1.0.0
   crypto: ^3.0.1
-
-
+  dropbox_client: ^0.8.0
+  file_picker: ^4.1.6
+  permission_handler: ^6.1.1
 
 dev_dependencies:
   flutter_test:
