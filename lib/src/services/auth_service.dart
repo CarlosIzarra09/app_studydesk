@@ -28,6 +28,7 @@ class AuthService{
     {
       //Guardar el token
       _prefs.Token = decodeResp['token'];
+      _prefs.Id = decodeResp['id'];
       return {'ok':true,'id':decodeResp['id'],'token':decodeResp['token']};
     }
     else{
@@ -47,6 +48,8 @@ class AuthService{
         body: userToJson(dataUser)
     );
 
+    //print(resp.body);
+
 
     Map<String,dynamic> decodeResp = json.decode(resp.body);
 
@@ -54,6 +57,7 @@ class AuthService{
     if(decodeResp.containsKey('id'))
     {
       //Guardar el token
+      _prefs.Id = decodeResp['id'];
       _prefs.Name = decodeResp['name'];
       return {'ok':true};
     }

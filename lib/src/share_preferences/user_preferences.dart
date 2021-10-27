@@ -18,6 +18,14 @@ class UserPreferences{
     _preferences.setString('token', value);
   }
 
+  get id{
+    return _preferences.getString('id');
+  }
+
+  set Id(int value) {
+    _preferences.setInt('id', value);
+  }
+
   get name{
     return _preferences.getString('name');
   }

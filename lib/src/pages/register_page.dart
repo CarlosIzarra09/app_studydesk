@@ -6,6 +6,7 @@ import 'package:app_studydesk/src/models/institute.dart';
 import 'package:app_studydesk/src/models/user.dart';
 import 'package:app_studydesk/src/services/auth_service.dart';
 import 'package:app_studydesk/src/services/career_service.dart';
+import 'package:app_studydesk/src/services/cloudinary_service.dart';
 import 'package:app_studydesk/src/services/institute_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _authService = AuthService();
   final _instituteService = InstituteService();
   final _careerService = CareerService();
+  final _cloudService = CloudinaryService();
   
   final TextEditingController _nameCtrl = TextEditingController();
   final TextEditingController _lastnameCtrl = TextEditingController();
@@ -475,11 +477,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
 
   void _signUpUser() async {
-    
+
+    var value = await _cloudService.uploadImage(photo!);
+
+
     final User dataUser = User(
         name: _nameCtrl.text, 
         lastName: _lastnameCtrl.text, 
-        logo: "logo.png", 
+        logo: value['secure_url'],
         email: _emailCtrl.text, 
         password: _passwCtrl.text);
     
@@ -494,12 +499,15 @@ class _RegisterPageState extends State<RegisterPage> {
 
       //guardamos su token
       await _authService.logginUser(authenticate);
+
+
       
       Navigator.of(context)
           .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
-      
-      
+
+
     } else {
+      await _cloudService.deleteImage(value["public_id"]);
       _showAlert(context);
     }
 
