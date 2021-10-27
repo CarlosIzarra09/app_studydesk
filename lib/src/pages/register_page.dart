@@ -478,13 +478,19 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _signUpUser() async {
 
-    var value = await _cloudService.uploadImage(photo!);
+    String urlImage ="https://i1.wp.com/umram.bilkent.edu.tr/wp-content/uploads/2021/03/person.png";
+    Map value ={};
+
+    if(photo != null) {
+      value = await _cloudService.uploadImage(photo!);
+      urlImage = value['secure_url'];
+    }
 
 
     final User dataUser = User(
         name: _nameCtrl.text, 
         lastName: _lastnameCtrl.text, 
-        logo: value['secure_url'],
+        logo: urlImage,
         email: _emailCtrl.text, 
         password: _passwCtrl.text);
     
@@ -507,7 +513,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
 
     } else {
-      await _cloudService.deleteImage(value["public_id"]);
+      if(photo != null)
+      {
+        await _cloudService.deleteImage(value["public_id"]);
+      }
       _showAlert(context);
     }
 
