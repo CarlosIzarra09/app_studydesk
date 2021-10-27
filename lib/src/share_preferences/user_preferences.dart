@@ -19,7 +19,7 @@ class UserPreferences{
   }
 
   get id{
-    return _preferences.getString('id');
+    return _preferences.getInt('id');
   }
 
   set Id(int value) {
@@ -33,6 +33,25 @@ class UserPreferences{
   set Name(String value) {
     _preferences.setString('name', value);
   }
+
+  get email{
+    return _preferences.getString('email');
+  }
+
+  set Email(String value) {
+    _preferences.setString('email', value);
+  }
+
+  get imageProfile{
+    return _preferences.getString('image');
+  }
+
+  set ImageProfile(String value) {
+    _preferences.setString('image', value);
+  }
+
+
+
 
   factory UserPreferences(){
     return _instance;

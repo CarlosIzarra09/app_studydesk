@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:app_studydesk/src/models/authenticate.dart';
 import 'package:app_studydesk/src/models/user.dart';
+import 'package:app_studydesk/src/services/user_service.dart';
 import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService{
   final _prefs = UserPreferences();
+  final _user = UserService();
   final String _dataUrl = "https://studydeskapi.azurewebsites.net";
 
   Future<Map<String,dynamic>> logginUser(Authenticate user) async
@@ -29,6 +31,10 @@ class AuthService{
       //Guardar el token
       _prefs.Token = decodeResp['token'];
       _prefs.Id = decodeResp['id'];
+      _prefs.Email = decodeResp['email'];
+      final user = await _user.getUser(_prefs.id);
+      _prefs.ImageProfile = user['user']['logo'];
+      _prefs.Name = user['user']['name'];
       return {'ok':true,'id':decodeResp['id'],'token':decodeResp['token']};
     }
     else{
@@ -59,6 +65,8 @@ class AuthService{
       //Guardar el token
       _prefs.Id = decodeResp['id'];
       _prefs.Name = decodeResp['name'];
+      _prefs.Email = decodeResp['email'];
+      _prefs.ImageProfile = decodeResp['logo'];
       return {'ok':true};
     }
     else{

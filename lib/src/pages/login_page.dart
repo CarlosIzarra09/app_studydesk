@@ -230,7 +230,7 @@ class _LoginPageState extends State<LoginPage> {
       final response = await _authService.logginUser(Authenticate(email: _email, password: _passw));
       //print(response);
       if(response['ok']){
-        await _userService.getUser(response['id']);
+        //await _userService.getUser(response['id']);
         Navigator.of(context).pushReplacementNamed('/home');
       }
       else{

@@ -1,4 +1,5 @@
 import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
+import 'package:app_studydesk/src/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -14,6 +15,7 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Bienvenido, ${_userPreferences.name}'),
       ),
+      drawer: const DrawerWidget(),
       body: ListView(
         children: <Widget>[
           //_routeButtons(context),
