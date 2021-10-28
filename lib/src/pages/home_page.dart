@@ -48,7 +48,7 @@ class HomePage extends StatelessWidget {
               "SISTEMA DE BÚSQUEDA",
               "Encuentra documentos de tu carrera universitaria y también tutores",
               Colors.white,
-              "/finddocuments"),
+              "/download"),
           _optionContainer(context,
               "assets/images/students_pc.png",
               "CONVIERTETE EN TUTOR",
