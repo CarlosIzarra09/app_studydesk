@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/download',
+      initialRoute: '/login',
       routes: {
         //Aqui agregan sus rutas
 

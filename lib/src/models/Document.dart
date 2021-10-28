@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-Document documentFromJson(String str) => Document.fromJson(json.decode(str));
+Document documentsFromJson(String str) => Document.fromJson(json.decode(str));
 
 String documentToJson(Document data) => json.encode(data.toJson());
 
