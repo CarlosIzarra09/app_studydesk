@@ -19,7 +19,6 @@ class InstituteService{
 
     List<dynamic> decodeResp = json.decode(resp.body);
 
-    print(decodeResp);
 
 
     if(decodeResp.isNotEmpty)

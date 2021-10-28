@@ -39,6 +39,7 @@ class _RegisterPageState extends State<RegisterPage> {
   List<Institute> _universities = [];
   List<Career> _careers = [];
   bool _isLoadingValues = false;
+  bool _passwordVisible = false;
 
   final _formKeyAccount = GlobalKey<FormState>();
   final _imagePicker = ImagePicker();
@@ -168,7 +169,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _registerFirstForm(BuildContext context) {
     return Form(
-      autovalidateMode: AutovalidateMode.onUserInteraction,
       key: _formKeyAccount,
       child: Column(
         children: <Widget>[
@@ -342,26 +342,35 @@ class _RegisterPageState extends State<RegisterPage> {
           textCapitalization: TextCapitalization.sentences,
           keyboardType: TextInputType.name,
           cursorColor: Colors.white,
+          maxLength: 30,
           style: const TextStyle(color: Colors.white),
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
+            counterText: "${_nameCtrl.text.length.toString()}/30",
+            counterStyle: const TextStyle(color: Colors.white),
             focusColor: Colors.white,
             hoverColor: Colors.white,
-            fillColor: Color.fromRGBO(255, 255, 255, 0.25),
+            fillColor: const Color.fromRGBO(255, 255, 255, 0.25),
             filled: true,
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
             labelText: 'Ingresa tus nombres',
-            icon: Icon(
+            icon: const Icon(
               Icons.account_circle,
               color: Colors.white,
             ),
-            hintStyle: TextStyle(color: Colors.white60),
-            labelStyle: TextStyle(color: Colors.white),
+            hintStyle: const TextStyle(color: Colors.white60),
+            labelStyle: const TextStyle(color: Colors.white),
           ),
           validator: (value){
             if (value == null || value.isEmpty) {
               return 'Por favor ingrese su nombre';
             }
             return null;
+          },
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          onChanged: (value){
+            setState(() {
+
+            });
           },
 
         )
@@ -376,26 +385,35 @@ class _RegisterPageState extends State<RegisterPage> {
           textCapitalization: TextCapitalization.sentences,
           keyboardType: TextInputType.name,
           cursorColor: Colors.white,
+          maxLength: 30,
           style: const TextStyle(color: Colors.white),
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
+            counterText: "${_lastnameCtrl.text.length.toString()}/30",
+            counterStyle: const TextStyle(color: Colors.white),
             focusColor: Colors.white,
             hoverColor: Colors.white,
-            fillColor: Color.fromRGBO(255, 255, 255, 0.25),
+            fillColor: const Color.fromRGBO(255, 255, 255, 0.25),
             filled: true,
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
             labelText: 'Ingresa tus apellidos',
-            icon: Icon(
+            icon: const Icon(
               Icons.account_box,
               color: Colors.white,
             ),
-            hintStyle: TextStyle(color: Colors.white60),
-            labelStyle: TextStyle(color: Colors.white),
+            hintStyle: const TextStyle(color: Colors.white60),
+            labelStyle: const TextStyle(color: Colors.white),
           ),
           validator: (value){
             if (value == null || value.isEmpty) {
-              return 'Por favor ingrese sus Apellidos';
+              return 'Por favor ingrese sus apellidos';
             }
             return null;
+          },
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          onChanged: (value){
+            setState(() {
+
+            });
           },
 
         ));
@@ -408,21 +426,24 @@ class _RegisterPageState extends State<RegisterPage> {
           controller: _emailCtrl,
           keyboardType: TextInputType.emailAddress,
           cursorColor: Colors.white,
+          maxLength: 40,
           style: const TextStyle(color: Colors.white),
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
+            counterText: "${_emailCtrl.text.length.toString()}/40",
+            counterStyle: const TextStyle(color: Colors.white),
             focusColor: Colors.white,
             hoverColor: Colors.white,
-            fillColor: Color.fromRGBO(255, 255, 255, 0.25),
+            fillColor: const Color.fromRGBO(255, 255, 255, 0.25),
             filled: true,
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
             hintText: 'user@email.com',
             labelText: 'Ingresa tu correo',
-            icon: Icon(
+            icon: const Icon(
               Icons.email,
               color: Colors.white,
             ),
-            hintStyle: TextStyle(color: Colors.white60),
-            labelStyle: TextStyle(color: Colors.white),
+            hintStyle: const TextStyle(color: Colors.white60),
+            labelStyle: const TextStyle(color: Colors.white),
           ),
           validator: (value){
             if (value == null || value.isEmpty) {
@@ -436,6 +457,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
             return null;
           },
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          onChanged: (value){
+            setState(() {
+
+            });
+          },
 
 
         ));
@@ -446,29 +473,54 @@ class _RegisterPageState extends State<RegisterPage> {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: TextFormField(
           controller: _passwCtrl,
-          obscureText: true,
+          obscureText: !_passwordVisible,
           cursorColor: Colors.white,
           style: const TextStyle(color: Colors.white),
-          decoration: const InputDecoration(
+          maxLength: 15,
+          decoration:  InputDecoration(
+            counterText: "${_passwCtrl.text.length.toString()}/15",
+            counterStyle: const TextStyle(color: Colors.white),
             focusColor: Colors.white,
             hoverColor: Colors.white,
-            fillColor: Color.fromRGBO(255, 255, 255, 0.25),
+            fillColor: const Color.fromRGBO(255, 255, 255, 0.25),
             filled: true,
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
             hintText: 'Password123',
             labelText: 'Ingresa tu contraseña',
-            icon: Icon(
+            icon: const Icon(
               Icons.lock,
               color: Colors.white,
             ),
-            hintStyle: TextStyle(color: Colors.white60),
-            labelStyle: TextStyle(color: Colors.white),
+            hintStyle: const TextStyle(color: Colors.white60),
+            labelStyle: const TextStyle(color: Colors.white),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _passwordVisible
+                    ? Icons.visibility
+                    : Icons.visibility_off,
+                color: Theme.of(context).primaryColorDark,
+              ),
+              onPressed: () {
+                setState(() {
+                  _passwordVisible = !_passwordVisible;
+                });
+              },
+            ),
           ),
           validator: (value){
             if (value == null || value.isEmpty) {
               return 'Por favor ingrese su contraseña';
             }
+            else if (value.length < 8){
+              return 'La contraseña es muy corta';
+            }
             return null;
+          },
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          onChanged: (value){
+            setState(() {
+
+            });
           },
 
         ));

@@ -1,6 +1,5 @@
 import 'package:app_studydesk/src/models/authenticate.dart';
 import 'package:app_studydesk/src/services/auth_service.dart';
-import 'package:app_studydesk/src/services/user_service.dart';
 import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +12,6 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _authService = AuthService();
-  final _userService = UserService();
   final _userPreferences = UserPreferences();
   final _formKey = GlobalKey<FormState>();
   Pattern pattern =
@@ -24,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
 
   var _email = "";
   var _passw = "";
+  bool _passwordVisible = false;
 
   @override
   void initState() {
@@ -98,7 +97,6 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _loginForm(BuildContext context) {
     return Form(
-      autovalidateMode: AutovalidateMode.onUserInteraction,
       key: _formKey,
       child: Column(
         children: <Widget>[
@@ -118,17 +116,20 @@ class _LoginPageState extends State<LoginPage> {
           keyboardType:  TextInputType.emailAddress,
           cursorColor: Colors.white,
           style: const TextStyle(color: Colors.white),
-          decoration: const InputDecoration(
+          maxLength: 40,
+          decoration: InputDecoration(
+              counterText: "${_email.length.toString()}/40",
+              counterStyle: const TextStyle(color: Colors.white),
               focusColor: Colors.white,
               hoverColor: Colors.white,
-              fillColor: Color.fromRGBO(255, 255, 255, 0.25),
+              fillColor: const Color.fromRGBO(255, 255, 255, 0.25),
               filled: true,
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
               hintText: 'user@email.com',
               labelText: 'Ingresa tu correo',
-              icon: Icon(Icons.email,color: Colors.white,),
-              hintStyle: TextStyle(color: Colors.white60),
-              labelStyle: TextStyle(color: Colors.white),
+              icon: const Icon(Icons.email,color: Colors.white,),
+              hintStyle: const TextStyle(color: Colors.white60),
+              labelStyle: const TextStyle(color: Colors.white),
           ),
           validator: (value){
             if (value == null || value.isEmpty) {
@@ -147,6 +148,7 @@ class _LoginPageState extends State<LoginPage> {
               _email = value;
             });
           },
+          autovalidateMode: AutovalidateMode.onUserInteraction,
         ));
   }
 
@@ -154,20 +156,36 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: TextFormField(
-          obscureText: true,
+          obscureText: !_passwordVisible,
           cursorColor: Colors.white,
           style: const TextStyle(color: Colors.white),
-          decoration: const InputDecoration(
+          maxLength: 15,
+          decoration: InputDecoration(
+            counterText: "${_passw.length.toString()}/15",
+            counterStyle: const TextStyle(color: Colors.white),
             focusColor: Colors.white,
             hoverColor: Colors.white,
-            fillColor: Color.fromRGBO(255, 255, 255, 0.25),
+            fillColor: const Color.fromRGBO(255, 255, 255, 0.25),
             filled: true,
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
             hintText: 'Password123',
             labelText: 'Ingresa tu contraseña',
-            icon: Icon(Icons.lock,color: Colors.white,),
-            hintStyle: TextStyle(color: Colors.white60),
-            labelStyle: TextStyle(color: Colors.white),
+            icon: const Icon(Icons.lock,color: Colors.white,),
+            hintStyle: const TextStyle(color: Colors.white60),
+            labelStyle: const TextStyle(color: Colors.white),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _passwordVisible
+                    ? Icons.visibility
+                    : Icons.visibility_off,
+                color: Theme.of(context).primaryColorDark,
+              ),
+              onPressed: () {
+                setState(() {
+                  _passwordVisible = !_passwordVisible;
+                });
+              },
+            ),
           ),
           validator: (value){
             if (value == null || value.isEmpty) {
@@ -180,6 +198,7 @@ class _LoginPageState extends State<LoginPage> {
               _passw = value;
             });
           },
+          autovalidateMode: AutovalidateMode.onUserInteraction,
         )
     );
   }
@@ -271,11 +290,11 @@ void _showAlert(BuildContext context) {
                   Navigator.of(context).pop();
                 },
                 child: const Text('Ok')),
-            TextButton(
+            /*TextButton(
                 onPressed: () {
 
                 },
-                child: const Text('Olvidé mi contraseña'))
+                child: const Text('Olvidé mi contraseña'))*/
           ],
         );
       }
