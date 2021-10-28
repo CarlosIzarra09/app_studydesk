@@ -92,13 +92,19 @@ class _DownloadPageState extends State<DownloadPage> {
             //Institutes -->>>>>>>>>>>>>>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Universidad",
-                  style: TextStyle(color: Colors.black, fontSize: 20),
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Text(
+                    'Universidad',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20
+                    ),
+                  ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.only(right: 30),
                   width: 150,
                   decoration: BoxDecoration(
                       color: Colors.white,
@@ -137,13 +143,19 @@ class _DownloadPageState extends State<DownloadPage> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Carrera",
-                  style: TextStyle(color: Colors.black, fontSize: 20),
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Text(
+                    'Carrera',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20
+                    ),
+                  ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.only(right: 30),
                   width: 150,
                   decoration: BoxDecoration(
                       color: Colors.white,
@@ -182,13 +194,19 @@ class _DownloadPageState extends State<DownloadPage> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Course",
-                  style: TextStyle(color: Colors.black, fontSize: 20),
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Text(
+                    'Curso',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20
+                    ),
+                  ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.only(right: 30),
                   width: 150,
                   decoration: BoxDecoration(
                       color: Colors.white,
@@ -227,13 +245,19 @@ class _DownloadPageState extends State<DownloadPage> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Topicos",
-                  style: TextStyle(color: Colors.black, fontSize: 20),
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Text(
+                    'Tópico',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20
+                    ),
+                  ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.only(right: 30),
                   width: 150,
                   decoration: BoxDecoration(
                       color: Colors.white,
@@ -271,6 +295,9 @@ class _DownloadPageState extends State<DownloadPage> {
             ),
             ElevatedButton(onPressed: _getDocuments,
                 child: const Text('Obtener documentos')),
+            const SizedBox(
+              height: 30,
+            ),
             Expanded(
               child: (showCharging)? const Center(
                 child: CircularProgressIndicator(strokeWidth: 6,),
@@ -395,7 +422,6 @@ class _DownloadPageState extends State<DownloadPage> {
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: Card(
         elevation: 10,
-        clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 20),
