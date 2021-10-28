@@ -19,7 +19,7 @@ class UserPreferences{
   }
 
   get id{
-    return _preferences.getString('id');
+    return _preferences.getInt('id');
   }
 
   set Id(int value) {
