@@ -16,6 +16,7 @@ import 'package:app_studydesk/src/services/topic_material_service.dart';
 import 'package:app_studydesk/src/services/topic_service.dart';
 import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:app_studydesk/src/util/double_round.dart';
+import 'package:app_studydesk/src/widgets/drawer.dart';
 import 'package:dropbox_client/dropbox_client.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -34,8 +35,9 @@ class _UploadDocumentsPageState extends State<UploadDocumentsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: Text("Bienvenido Rodrigo"),
+        title: Text("Subir documento"),
       ),
+      drawer: const DrawerWidget(),
       body: SingleChildScrollView(
         child:  Container(
         child: Column(
@@ -100,7 +102,7 @@ class _InputWidget extends State<InputWidget> {
   //late SharedPreferences _prefs;
   late UserPreferences _userPrefs = UserPreferences();
   String _fileName = "no hay archivo seleccionado";
-  late String? _filePath;
+  String? _filePath = null;
   double _sizeFile = 0.0;
 
   final String _dropboxClientId = 'app_studydesk';
@@ -323,24 +325,32 @@ class _InputWidget extends State<InputWidget> {
               ),
               margin: EdgeInsets.only(top: 30),
             ),
-            Container(
-              child: Text(_fileName, textAlign: TextAlign.center),
-              margin: EdgeInsets.only(top: 50),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 30),
+                child: Text(_fileName, textAlign: TextAlign.center),
+              ),
+              //margin: EdgeInsets.only(top: 50),
             ),
             Container(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child:ElevatedButton(
+                child: (_filePath == null)? ElevatedButton(
                   onPressed: _selectFile,
-                  child: const Text('Seleccionar'),
-
+                  child: const Text('Seleccionar archivo'),
+                ):ElevatedButton(
+                  onPressed: _unselectFile,
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.red)
+                  ),
+                  child: const Text('Deseleccionar archivo'),
                 ),
               ),
               width: 500,
             ),
             Container(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                padding: const EdgeInsets.symmetric(vertical: 0),
                 child: ElevatedButton(
                   onPressed: _uploadFile,
                   child: const Text('Subir Documento'),
@@ -348,7 +358,8 @@ class _InputWidget extends State<InputWidget> {
                 ),
               ),
               width: 500,
-            )
+            ),
+            SizedBox(height: 100,)
 
           ],
         ),
@@ -440,6 +451,14 @@ class _InputWidget extends State<InputWidget> {
     //print(response);
   }
 
+  void _unselectFile() {
+    setState(() {
+      _filePath = null;
+      _percentage = 0.0;
+      _fileName = "no hay archivo seleccionado";
+    });
+  }
+
   void _selectFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
@@ -457,14 +476,8 @@ class _InputWidget extends State<InputWidget> {
       });
     } else {
 
-
-      setState(() {
-        _filePath = null;
-        _percentage = 0.0;
-        _fileName = "no hay archivo seleccionado";
-      });
-
-      print('No seleccionó un archivo');
+      _unselectFile();
+      //print('No seleccionó un archivo');
       // User canceled the picker
     }
   }
@@ -479,6 +492,29 @@ class _InputWidget extends State<InputWidget> {
           setState(() {
             //_ProgressCount = '$uploaded / $total';
             _percentage = uploaded/total;
+
+            if(uploaded == total) {
+
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  duration: const Duration(seconds: 2),
+                  content:
+              Row(
+                  children: const <Widget>[
+                    Icon(Icons.thumb_up,color: Colors.white,),
+                    SizedBox(width: 20),
+                    Text('Se completó la subida!')
+                  ]
+              )
+              ),
+              );
+
+              Future.delayed(const Duration(milliseconds:  2250)).then((value) => {
+                Navigator.of(context).pop()
+              });
+
+            }
+
+
           });
           //print('progress $uploaded / $total');
         });

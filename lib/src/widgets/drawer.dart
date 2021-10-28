@@ -25,6 +25,19 @@ class DrawerWidget extends StatelessWidget {
           ),
 
           ListTile(
+            leading: Icon(Icons.home),
+            title: const Text('Principal'),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+
+              Navigator.of(context).pop();
+              Navigator.of(context).pushNamed('/home');
+
+            },
+          ),
+
+          ListTile(
             leading: const Icon(Icons.account_box),
             title: const Text('Mi perfil'),
             onTap: () {

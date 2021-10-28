@@ -3,6 +3,7 @@ import 'package:app_studydesk/src/models/course.dart';
 import 'package:app_studydesk/src/models/institute.dart';
 import 'package:app_studydesk/src/models/topic.dart';
 import 'package:app_studydesk/src/services/career_service.dart';
+import 'package:app_studydesk/src/widgets/drawer.dart';
 import 'package:dropbox_client/dropbox_client.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -39,10 +40,8 @@ class _DownloadPageState extends State<DownloadPage> {
   List<Topic> _topics = [];
   List<StudyMaterial> _listDocuments = [];
 
-  bool _isLoadingValues = false;
   bool _isLoadingCareersValues = false;
   bool _isLoadingCoursesValues = false;
-  bool _isLoadingTopicsValues = false;
 
 
 
@@ -81,8 +80,9 @@ class _DownloadPageState extends State<DownloadPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Download'),
+        title: const Text('Buscar Archivos'),
       ),
+      drawer: const DrawerWidget(),
       body: Container(
         padding: const EdgeInsets.only(top: 20),
         width: double.infinity,
@@ -95,7 +95,7 @@ class _DownloadPageState extends State<DownloadPage> {
               children: <Widget>[
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Text(
+                  child: const Text(
                     'Universidad',
                     style: TextStyle(
                         color: Colors.black,
@@ -146,7 +146,7 @@ class _DownloadPageState extends State<DownloadPage> {
               children: <Widget>[
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Text(
+                  child: const Text(
                     'Carrera',
                     style: TextStyle(
                         color: Colors.black,
@@ -197,7 +197,7 @@ class _DownloadPageState extends State<DownloadPage> {
               children: <Widget>[
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Text(
+                  child: const Text(
                     'Curso',
                     style: TextStyle(
                         color: Colors.black,
@@ -228,7 +228,6 @@ class _DownloadPageState extends State<DownloadPage> {
                     onChanged: (_isLoadingCoursesValues || _valueCourse.name=="")? null :(value) {
                       setState(() {
                         _valueCourse = value!;
-                        _isLoadingTopicsValues = true;
                         getTopics(_valueCourse.id);
                       });
                     },
@@ -248,7 +247,7 @@ class _DownloadPageState extends State<DownloadPage> {
               children: <Widget>[
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Text(
+                  child: const Text(
                     'Tópico',
                     style: TextStyle(
                         color: Colors.black,
@@ -396,7 +395,6 @@ class _DownloadPageState extends State<DownloadPage> {
       }
     });
 
-    _isLoadingTopicsValues = false;
   }
 
   void _getDocuments() async {
@@ -418,13 +416,14 @@ class _DownloadPageState extends State<DownloadPage> {
       String filePath,
       String title,
       String description) {
+
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Card(
         elevation: 10,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -432,28 +431,38 @@ class _DownloadPageState extends State<DownloadPage> {
                 //crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   const Icon(Icons.description,size: 80,),
-                  ElevatedButton(onPressed: () => _downloadDocument(filePath,fileName),
+                  ElevatedButton(onPressed: () => {
+                    _downloadDocument(filePath,fileName)
+                  },
                     child: Row(
                       children: const <Widget>[
                         Text('Descargar'),
                         SizedBox(width: 10,),
                         Icon(Icons.download)
                       ],
-                    ),
-                  )
+                    )
+                  ),
                 ],
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(height: 20,),
-                  Text(title,style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),),
-                  SizedBox(height: 20,),
-                  Text(description),
-                  SizedBox(height: 20,),
-                  Text('Peso: $size mb'),
-                  SizedBox(height: 20,),
-                ],
+              Container(
+                width: 150,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    const SizedBox(height: 20,),
+                    Text(title,
+                      style: const TextStyle(
+                          fontSize: 24,fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.fade,
+                    ),
+                    const SizedBox(height: 20,),
+                    Text(description,textAlign: TextAlign.justify,maxLines: 2,overflow: TextOverflow.ellipsis,),
+                    const SizedBox(height: 20,),
+                    Text('Peso: $size mb'),
+                    const SizedBox(height: 20,),
+                  ],
+                ),
               ),
             ],
           ),
@@ -473,14 +482,19 @@ class _DownloadPageState extends State<DownloadPage> {
   void _downloadDocument(String filePath,String fileName) async {
     await _getStoragePermission();
     if(permissionGranted){
-      final result = await Dropbox.download(filePath, '/storage/emulated/0/Download/$fileName',
+
+
+      await Dropbox.download(filePath, '/storage/emulated/0/Download/$fileName',
               (downloaded, total) {
             //print('progress $downloaded / $total');
             if(downloaded == total) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:
+
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  duration: const Duration(seconds: 2),
+                  content:
               Row(
-                  children: <Widget>[
-                    Icon(Icons.thumb_up),
+                  children: const <Widget>[
+                    Icon(Icons.thumb_up,color: Colors.white,),
                     SizedBox(width: 20),
                     Text('Se completó la descarga!')
                   ]
