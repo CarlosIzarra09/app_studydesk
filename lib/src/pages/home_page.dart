@@ -21,6 +21,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _prefs.LastPage = "/home";
     getLoggedUser();
   }
 
@@ -40,7 +41,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         //title: (_prefs.isTutor)?Text("tutor"):Text("estudiante, ${userStudent!.name}"),
-        title: (_prefs.isTutor)? Text('Bienvenido, ${userTutor!.name}'):Text('Bienvenido, ${userStudent!.name}'),
+        title: (_prefs.isTutor)? Text('Bienvenido, tutor ${userTutor!.name}'):Text('Bienvenido, ${userStudent!.name}'),
       ),
       drawer: DrawerWidget(userStudent: userStudent,userTutor: userTutor,),
       body: ListView(
@@ -62,26 +63,57 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
+          (_prefs.isTutor)?
+              Column(
+                children: <Widget>[
+                  _optionContainer(context,
+                      "assets/images/calendar.png",
+                      "Agendar sesión",
+                      "Crea una sesión de tutoria, es rápido y sencillo",
+                      const Color.fromRGBO(111, 208, 253, 1),
+                      //manda tu ruta por aqui
+                      "/sesion-detail"),
+                  _optionContainer(context,
+                      "assets/images/tutoria_virtual.png",
+                      "Mis sesiones",
+                      "Revisa tus sessiones pendientes e ingresa a ellas para comenzar a enseñar",
+                      Colors.white,
+                      //manda tu ruta por aqui
+                      "/sessions"),
+                  _optionContainer(context,
+                      "assets/images/stars.png",
+                      "Mis calificaciones",
+                      "Revisa lo que tus estudiantes opinan de tus sesiones",
+                      const Color.fromRGBO(111, 208, 253, 1),
+                      //manda tu ruta por aqui
+                      "/home"),
+                ],):
+              Column(
+                children: <Widget>[
+                  _optionContainer(context,
+                      "assets/images/contacts_net.png",
+                      "SUBIR DOCUMENTOS",
+                      "Comparte tus documentos y apuntes",
+                      const Color.fromRGBO(111, 208, 253, 1),
+                      //manda tu ruta por aqui
+                      "/upload"),
+                  _optionContainer(context,
+                      "assets/images/findsearch.png",
+                      "SISTEMA DE BÚSQUEDA",
+                      "Encuentra documentos de tu carrera universitaria y también tutores",
+                      Colors.white,
+                      "/download"),
+                  _optionContainer(context,
+                      "assets/images/students_pc.png",
+                      "CONVIERTETE EN TUTOR",
+                      "Comparte tus conocimientos y cobra por ello",
+                      const Color.fromRGBO(111, 208, 253, 1),
+                      "/home")
+              ],)
 
-          _optionContainer(context,
-              "assets/images/contacts_net.png",
-              "SUBIR DOCUMENTOS",
-              "Comparte tus documentos y apuntes",
-              const Color.fromRGBO(111, 208, 253, 1),
-              //manda tu ruta por aqui
-              "/upload"),
-          _optionContainer(context,
-              "assets/images/findsearch.png",
-              "SISTEMA DE BÚSQUEDA",
-              "Encuentra documentos de tu carrera universitaria y también tutores",
-              Colors.white,
-              "/download"),
-          _optionContainer(context,
-              "assets/images/students_pc.png",
-              "CONVIERTETE EN TUTOR",
-              "Comparte tus conocimientos y cobra por ello",
-              const Color.fromRGBO(111, 208, 253, 1),
-              "/home"),
+
+
+
         ],
       ),
     );
@@ -136,8 +168,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                       onPressed: () {
 
-                        //TODO: De esta manera me muevo a una ruta con nombre
-                        Navigator.of(context).pushNamed(route);
+                        if(_prefs.lastPage != route) {
+                          Navigator.of(context).pushNamed(route);
+                        }
 
                       },
                       child: Text(txtbutton,

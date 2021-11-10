@@ -1,5 +1,6 @@
 
 import 'package:app_studydesk/src/pages/download_doc_page.dart';
+import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:flutter/material.dart';
 
 import 'pages/home_page.dart';
@@ -13,12 +14,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final _prefs = UserPreferences();
+
     return MaterialApp(
       title: 'Studydesk App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/login',
+      initialRoute: _prefs.lastPage,
       routes: {
         //Aqui agregan sus rutas
 

@@ -34,9 +34,22 @@ class UserPreferences{
     _preferences.setInt('id', value);
   }
 
+  get lastPage {
+    if(_preferences.getString('lastPage') == null) {
+      return '/login';
+    } else{
+      return _preferences.getString('lastPage');
+    }
+
+  }
+
+  set LastPage(String value) {
+    _preferences.setString('lastPage',value);
+  }
 
 
-  /*
+
+    /*
 
   get name{
     return _preferences.getString('name');
@@ -65,11 +78,9 @@ class UserPreferences{
 
 
 
-  factory UserPreferences(){
-    return _instance;
+    factory UserPreferences(){
+      return _instance;
+    }
+
+    UserPreferences._internal();
   }
-
-  UserPreferences._internal();
-
-
-}

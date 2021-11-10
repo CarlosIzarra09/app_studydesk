@@ -13,7 +13,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _authService = AuthService();
-  final _userPreferences = UserPreferences();
+  final _prefs = UserPreferences();
   final _formKey = GlobalKey<FormState>();
 
   late RegExp regex;
@@ -21,6 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   var _email = "";
   var _password = "";
   bool _passwordVisible = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -32,7 +33,8 @@ class _LoginPageState extends State<LoginPage> {
         r"{0,253}[a-zA-Z0-9])?)*$";
 
     regex = RegExp(pattern.toString());
-    _initPreferences();
+    //_initPreferences();
+    _prefs.LastPage = "/login";
     _initDatabase();
   }
   
@@ -218,7 +220,10 @@ class _LoginPageState extends State<LoginPage> {
           children: <Widget>[
             ElevatedButton(
               onPressed: _authenticateUser,
-              child: const Text('INGRESAR'),
+              child: (_isLoading)? const SizedBox(
+                width: 20,height: 20,
+                child: CircularProgressIndicator(color: Colors.white,strokeWidth: 3),
+              ): const Text('INGRESAR'),
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
                       const Color.fromRGBO(56, 72, 171, 1)
@@ -249,7 +254,10 @@ class _LoginPageState extends State<LoginPage> {
 
   void _authenticateUser() async{
 
+
     if(_formKey.currentState!.validate()) {
+      _isLoading = true;
+      setState(() {});
       final response = await _authService.loggingUser(Authenticate(email: _email, password: _password));
       //print(response);
       if(response['ok']){
@@ -257,6 +265,8 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.of(context).pushReplacementNamed('/home');
       }
       else{
+        setState(() {});
+        _isLoading = false;
         _showAlert(context);
       }
 
@@ -264,9 +274,9 @@ class _LoginPageState extends State<LoginPage> {
 
   }
 
-  void _initPreferences() async {
+  /*void _initPreferences() async {
     await _userPreferences.initPrefs();
-  }
+  }*/
 
   void _initDatabase() async{
     await DbHelper.myDatabase.database;
