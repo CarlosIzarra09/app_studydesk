@@ -18,6 +18,14 @@ class UserPreferences{
     _preferences.setString('token', value);
   }
 
+  get isTutor{
+    return _preferences.getBool('isTutor');
+  }
+
+  set IsTutor(bool value) {
+    _preferences.setBool('isTutor', value);
+  }
+
   get id{
     return _preferences.getInt('id');
   }
@@ -25,6 +33,10 @@ class UserPreferences{
   set Id(int value) {
     _preferences.setInt('id', value);
   }
+
+
+
+  /*
 
   get name{
     return _preferences.getString('name');
@@ -48,7 +60,7 @@ class UserPreferences{
 
   set ImageProfile(String value) {
     _preferences.setString('image', value);
-  }
+  }*/
 
 
 

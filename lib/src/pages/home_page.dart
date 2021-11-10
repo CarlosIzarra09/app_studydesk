@@ -1,25 +1,52 @@
+import 'package:app_studydesk/src/models/user_student.dart';
+import 'package:app_studydesk/src/models/user_tutor.dart';
 import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
+import 'package:app_studydesk/src/util/dbhelper.dart';
 import 'package:app_studydesk/src/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+
+  final UserPreferences _prefs = UserPreferences();
+  UserStudent? userStudent = UserStudent(name: "", lastName: "", logo: "", email: "", password: "", isTutor: 0);
+  UserTutor? userTutor = UserTutor(name: "", lastName: "", logo: "", description: "", pricePerHour: 0.0, email: "", password: "");
+
+  @override
+  void initState() {
+    super.initState();
+    getLoggedUser();
+  }
+
+  void getLoggedUser() async {
+
+    (_prefs.isTutor)? userTutor = await DbHelper.myDatabase.getUserTutorByID(_prefs.id):
+    userStudent = await DbHelper.myDatabase.getUserStudentByID(_prefs.id);
+    setState(() {
+
+    });
+  }
 
 
   @override
   Widget build(BuildContext context) {
 
-    final UserPreferences _userPreferences = UserPreferences();
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bienvenido, ${_userPreferences.name}'),
+        //title: (_prefs.isTutor)?Text("tutor"):Text("estudiante, ${userStudent!.name}"),
+        title: (_prefs.isTutor)? Text('Bienvenido, ${userTutor!.name}'):Text('Bienvenido, ${userStudent!.name}'),
       ),
-      drawer: const DrawerWidget(),
+      drawer: DrawerWidget(userStudent: userStudent,userTutor: userTutor,),
       body: ListView(
         children: <Widget>[
           //_routeButtons(context),
-          Container(
+          SizedBox(
             height: 160,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -123,25 +150,4 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-
- /* Widget _routeButtons(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        ElevatedButton(
-          child: const Text('ver documentos'),
-          onPressed: () {
-            // De esta manera me muevo a una ruta con nombre
-            //Navigator.of(context).pushNamed('/home');
-          },
-        ),
-        const Expanded(child: SizedBox()),
-        ElevatedButton(
-          child: const Text('buscar documentos'),
-          onPressed: () {
-            //Navigator.of(context).pushNamed('/home');
-          },
-        ),
-      ],
-    );
-  }*/
 }

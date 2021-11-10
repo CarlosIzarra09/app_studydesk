@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:app_studydesk/src/models/authenticate.dart';
 import 'package:app_studydesk/src/models/career.dart';
-import 'package:app_studydesk/src/models/institute.dart';
-import 'package:app_studydesk/src/models/user.dart';
+import 'package:app_studydesk/src/models/university.dart';
+import 'package:app_studydesk/src/models/user_student.dart';
 import 'package:app_studydesk/src/services/auth_service.dart';
 import 'package:app_studydesk/src/services/career_service.dart';
 import 'package:app_studydesk/src/services/cloudinary_service.dart';
-import 'package:app_studydesk/src/services/institute_service.dart';
+import 'package:app_studydesk/src/services/university_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,7 +21,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _authService = AuthService();
-  final _instituteService = InstituteService();
+  final _universityService = UniversityService();
   final _careerService = CareerService();
   final _cloudService = CloudinaryService();
   
@@ -33,26 +33,26 @@ class _RegisterPageState extends State<RegisterPage> {
   int _currentStep = 0;
   File? photo;
 
-  Institute _valueUniversity = Institute(id: 0, name: "none");
+  University _valueUniversity = University(id: 0, name: "none");
   Career _valueCareer = Career(id: 0, name: "none");
 
-  List<Institute> _universities = [];
+  List<University> _universities = [];
   List<Career> _careers = [];
   bool _isLoadingValues = false;
   bool _passwordVisible = false;
 
   final _formKeyAccount = GlobalKey<FormState>();
   final _imagePicker = ImagePicker();
-  Pattern pattern =
-      r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-      r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-      r"{0,253}[a-zA-Z0-9])?)*$";
   late RegExp regex;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    Pattern pattern =
+        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?)*$";
     regex = RegExp(pattern.toString());
     getUniversities();
   }
@@ -254,15 +254,15 @@ class _RegisterPageState extends State<RegisterPage> {
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(5)),
-                child: DropdownButton<Institute>(
+                child: DropdownButton<University>(
                   borderRadius: BorderRadius.circular(5),
                   menuMaxHeight: 550,
                   underline: const SizedBox(),
                   value: _valueUniversity,
                   isExpanded: true,
                   items: _universities
-                      .map<DropdownMenuItem<Institute>>((item) {
-                    return DropdownMenuItem<Institute>(
+                      .map<DropdownMenuItem<University>>((item) {
+                    return DropdownMenuItem<University>(
                       value: item,
                       child: Text(item.name),
                     );
@@ -539,12 +539,14 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
 
-    final User dataUser = User(
+    final UserStudent dataUser = UserStudent(
         name: _nameCtrl.text, 
         lastName: _lastnameCtrl.text, 
         logo: urlImage,
         email: _emailCtrl.text, 
-        password: _passwCtrl.text);
+        password: _passwCtrl.text,
+        isTutor: 0
+    );
     
 
     final response = await _authService.signUpUser(dataUser, _valueCareer.id);
@@ -556,7 +558,7 @@ class _RegisterPageState extends State<RegisterPage> {
           password: _passwCtrl.text);
 
       //guardamos su token
-      await _authService.logginUser(authenticate);
+      await _authService.loggingUser(authenticate);
 
 
       
@@ -589,10 +591,10 @@ class _RegisterPageState extends State<RegisterPage> {
       ];
 
   void getUniversities() async {
-    var univResponse = await _instituteService.getAllInstitutes();
+    var univResponse = await _universityService.getAllUniversities();
     setState(() {
-      _universities = (univResponse['institutes'] as List)
-          .map((item) => Institute.fromJson(item)).toList();
+      _universities = (univResponse['universities'] as List)
+          .map((item) => University.fromJson(item)).toList();
 
       _valueUniversity = _universities.first;
     });
@@ -601,7 +603,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void getCareers(int id) async {
-    var careerResponse = await _careerService.getCareersByInstituteId(id);
+    var careerResponse = await _careerService.getCareersByUniversityId(id);
     setState(() {
       if (careerResponse['ok']) {
         _careers = (careerResponse['careers'] as List)

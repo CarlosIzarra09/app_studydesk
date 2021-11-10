@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-StudentMaterial documentFromJson(String str) => StudentMaterial.fromJson(json.decode(str));
+StudentMaterial studentMaterialFromJson(String str) => StudentMaterial.fromJson(json.decode(str));
 
-String documentToJson(StudentMaterial data) => json.encode(data.toJson());
+String studentMaterialToJson(StudentMaterial data) => json.encode(data.toJson());
 
 class StudentMaterial {
   StudentMaterial({

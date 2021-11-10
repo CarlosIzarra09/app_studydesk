@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'institute.dart';
-
 Topic topicFromJson(String str) => Topic.fromJson(json.decode(str));
 
 String topicToJson(Topic data) => json.encode(data.toJson());

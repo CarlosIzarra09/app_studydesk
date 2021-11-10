@@ -1,15 +1,14 @@
 import 'package:app_studydesk/src/models/career.dart';
 import 'package:app_studydesk/src/models/course.dart';
-import 'package:app_studydesk/src/models/institute.dart';
+import 'package:app_studydesk/src/models/university.dart';
 import 'package:app_studydesk/src/models/topic.dart';
 import 'package:app_studydesk/src/services/career_service.dart';
-import 'package:app_studydesk/src/widgets/drawer.dart';
 import 'package:dropbox_client/dropbox_client.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:app_studydesk/src/models/study_material.dart';
 import 'package:app_studydesk/src/services/course_service.dart';
-import 'package:app_studydesk/src/services/institute_service.dart';
+import 'package:app_studydesk/src/services/university_service.dart';
 import 'package:app_studydesk/src/services/topic_material_service.dart';
 import 'package:app_studydesk/src/services/topic_service.dart';
 
@@ -21,20 +20,20 @@ class DownloadPage extends StatefulWidget {
 }
 
 class _DownloadPageState extends State<DownloadPage> {
-  Institute _valueUniversity = Institute(id: 0, name: "Universidad");
-  Career _valueCareer = Career(id: 0, name: "Carrera");
-  Course _valueCourse = Course(id: 0, name: "Course");
-  Topic _valueTopic = Topic(id: 0, name: "Topico");
+  University _valueUniversity = University(id: 0, name: "none");
+  Career _valueCareer = Career(id: 0, name: "none");
+  Course _valueCourse = Course(id: 0, name: "none");
+  Topic _valueTopic = Topic(id: 0, name: "none");
 
   int topicId = 1;
 
-  final InstituteService _instituteService = InstituteService();
+  final _universityService = UniversityService();
   final _careerService = CareerService();
   final _courseService = CourseService();
   final _topicService = TopicService();
-  final TopicMaterialService _topicMaterialService = TopicMaterialService();
+  final _topicMaterialService = TopicMaterialService();
 
-  List<Institute> _universities = [];
+  List<University> _universities = [];
   List<Career> _careers = [];
   List<Course> _courses = [];
   List<Topic> _topics = [];
@@ -82,7 +81,7 @@ class _DownloadPageState extends State<DownloadPage> {
       appBar: AppBar(
         title: const Text('Buscar Archivos'),
       ),
-      drawer: const DrawerWidget(),
+      //drawer:  DrawerWidget(),
       body: Container(
         padding: const EdgeInsets.only(top: 20),
         width: double.infinity,
@@ -109,15 +108,15 @@ class _DownloadPageState extends State<DownloadPage> {
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(5)),
-                  child: DropdownButton<Institute>(
+                  child: DropdownButton<University>(
                     borderRadius: BorderRadius.circular(5),
                     menuMaxHeight: 550,
                     underline: const SizedBox(),
                     value: _valueUniversity,
                     isExpanded: true,
                     items: _universities
-                        .map<DropdownMenuItem<Institute>>((item) {
-                      return DropdownMenuItem<Institute>(
+                        .map<DropdownMenuItem<University>>((item) {
+                      return DropdownMenuItem<University>(
                         value: item,
                         child: Text(item.name),
                       );
@@ -331,10 +330,10 @@ class _DownloadPageState extends State<DownloadPage> {
   }
 
   void getUniversities() async {
-    var univResponse = await _instituteService.getAllInstitutes();
+    var univResponse = await _universityService.getAllUniversities();
     setState(() {
-      _universities = (univResponse['institutes'] as List)
-          .map((item) => Institute.fromJson(item)).toList();
+      _universities = (univResponse['universities'] as List)
+          .map((item) => University.fromJson(item)).toList();
 
       _valueUniversity = _universities.first;
     });
@@ -342,7 +341,7 @@ class _DownloadPageState extends State<DownloadPage> {
     getCareers(_valueUniversity.id);
   }
   void getCareers(int id) async {
-    var careerResponse = await _careerService.getCareersByInstituteId(id);
+    var careerResponse = await _careerService.getCareersByUniversityId(id);
     setState(() {
       if (careerResponse['ok']) {
         _careers = (careerResponse['careers'] as List)

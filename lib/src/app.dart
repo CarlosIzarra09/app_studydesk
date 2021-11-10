@@ -1,11 +1,11 @@
 
-import 'package:app_studydesk/src/pages/download_page.dart';
+import 'package:app_studydesk/src/pages/download_doc_page.dart';
 import 'package:flutter/material.dart';
 
 import 'pages/home_page.dart';
 import 'pages/login_page.dart';
 import 'pages/register_page.dart';
-import 'pages/upload_documents.dart';
+import 'pages/upload_doc_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

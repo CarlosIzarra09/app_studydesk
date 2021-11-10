@@ -1,6 +1,7 @@
 import 'package:app_studydesk/src/models/authenticate.dart';
 import 'package:app_studydesk/src/services/auth_service.dart';
 import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
+import 'package:app_studydesk/src/util/dbhelper.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -14,22 +15,25 @@ class _LoginPageState extends State<LoginPage> {
   final _authService = AuthService();
   final _userPreferences = UserPreferences();
   final _formKey = GlobalKey<FormState>();
-  Pattern pattern =
-      r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-      r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
-      r"{0,253}[a-zA-Z0-9])?)*$";
+
   late RegExp regex;
 
   var _email = "";
-  var _passw = "";
+  var _password = "";
   bool _passwordVisible = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    Pattern pattern =
+        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+        r"{0,253}[a-zA-Z0-9])?)*$";
+
     regex = RegExp(pattern.toString());
     _initPreferences();
+    _initDatabase();
   }
   
   @override
@@ -161,7 +165,7 @@ class _LoginPageState extends State<LoginPage> {
           style: const TextStyle(color: Colors.white),
           maxLength: 15,
           decoration: InputDecoration(
-            counterText: "${_passw.length.toString()}/15",
+            counterText: "${_password.length.toString()}/15",
             counterStyle: const TextStyle(color: Colors.white),
             focusColor: Colors.white,
             hoverColor: Colors.white,
@@ -195,7 +199,7 @@ class _LoginPageState extends State<LoginPage> {
           },
           onChanged: (value){
             setState(() {
-              _passw = value;
+              _password = value;
             });
           },
           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -224,7 +228,7 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(height: 10,),
             const Text('¿No tienes una cuenta aún?',
             style: TextStyle(color: Colors.white,fontSize: 18),),
-            const SizedBox(height: 50,),
+            const SizedBox(height: 20,),
             ElevatedButton(
               onPressed: (){
 
@@ -246,7 +250,7 @@ class _LoginPageState extends State<LoginPage> {
   void _authenticateUser() async{
 
     if(_formKey.currentState!.validate()) {
-      final response = await _authService.logginUser(Authenticate(email: _email, password: _passw));
+      final response = await _authService.loggingUser(Authenticate(email: _email, password: _password));
       //print(response);
       if(response['ok']){
         //await _userService.getUser(response['id']);
@@ -262,6 +266,10 @@ class _LoginPageState extends State<LoginPage> {
 
   void _initPreferences() async {
     await _userPreferences.initPrefs();
+  }
+
+  void _initDatabase() async{
+    await DbHelper.myDatabase.database;
   }
 }
 

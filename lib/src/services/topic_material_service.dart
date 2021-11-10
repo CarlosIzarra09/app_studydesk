@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:app_studydesk/src/models/study_material.dart';
 
 class TopicMaterialService{
   final String _dataUrl = "https://studydeskapi.azurewebsites.net";
+  final UserPreferences _prefs = UserPreferences();
 
   Future<Map<String,dynamic>> getAllStudyMaterialsByTopicId(int topicId) async
   {
@@ -13,7 +15,8 @@ class TopicMaterialService{
 
     final resp = await http.get(
       url,
-      headers: {"Content-Type": "application/json"},
+      headers: {"Content-Type": "application/json",
+        'Authorization': 'Bearer ${_prefs.token}'},
     );
 
     final decodeResp = json.decode(resp.body);
@@ -41,7 +44,7 @@ class TopicMaterialService{
     final resp = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
-        body: documentToJson(model)
+        body: studyMaterialToJson(model)
     );
 
     print(resp);

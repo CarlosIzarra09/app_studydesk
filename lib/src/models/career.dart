@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'institute.dart';
-
 Career careerFromJson(String str) => Career.fromJson(json.decode(str));
 
 String careerToJson(Career data) => json.encode(data.toJson());

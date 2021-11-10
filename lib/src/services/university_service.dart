@@ -1,15 +1,14 @@
 import 'dart:convert';
-import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:http/http.dart' as http;
 
 
 
-class InstituteService{
+class UniversityService{
   final String _dataUrl = "https://studydeskapi.azurewebsites.net";
 
-  Future<Map<String,dynamic>> getAllInstitutes() async
+  Future<Map<String,dynamic>> getAllUniversities() async
   {
-    Uri url = Uri.parse('$_dataUrl/api/institutes');
+    Uri url = Uri.parse('$_dataUrl/api/universities');
 
 
     final resp = await http.get(
@@ -23,11 +22,11 @@ class InstituteService{
 
     if(decodeResp.isNotEmpty)
     {
-      return {'ok':true,'institutes':decodeResp};
+      return {'ok':true,'universities':decodeResp};
     }
     else{
 
-      return {'ok':false,'institutes':[]};
+      return {'ok':false,'universities':[]};
     }
   }
 }

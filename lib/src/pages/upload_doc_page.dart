@@ -1,27 +1,21 @@
-import 'dart:convert';
 import 'dart:ui';
-
-import 'package:app_studydesk/src/models/Document.dart';
 import 'package:app_studydesk/src/models/career.dart';
 import 'package:app_studydesk/src/models/course.dart';
-import 'package:app_studydesk/src/models/institute.dart';
+import 'package:app_studydesk/src/models/university.dart';
 import 'package:app_studydesk/src/models/student_material.dart';
 import 'package:app_studydesk/src/models/study_material.dart';
 import 'package:app_studydesk/src/models/topic.dart';
 import 'package:app_studydesk/src/services/career_service.dart';
 import 'package:app_studydesk/src/services/course_service.dart';
-import 'package:app_studydesk/src/services/institute_service.dart';
+import 'package:app_studydesk/src/services/university_service.dart';
 import 'package:app_studydesk/src/services/student_material_service.dart';
 import 'package:app_studydesk/src/services/topic_material_service.dart';
 import 'package:app_studydesk/src/services/topic_service.dart';
 import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:app_studydesk/src/util/double_round.dart';
-import 'package:app_studydesk/src/widgets/drawer.dart';
 import 'package:dropbox_client/dropbox_client.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UploadDocumentsPage extends StatefulWidget {
   const UploadDocumentsPage({Key? key}) : super(key: key);
@@ -35,18 +29,18 @@ class _UploadDocumentsPageState extends State<UploadDocumentsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: Text("Subir documento"),
+        title: const Text("Subir documento"),
       ),
-      drawer: const DrawerWidget(),
+      //drawer:  DrawerWidget(),
       body: SingleChildScrollView(
         child:  Container(
         child: Column(
-          children: <Widget> [
+          children: const <Widget> [
             InputWidget(),
           ]
         ),
 
-        margin: EdgeInsets.all(20.0),
+        margin: const EdgeInsets.all(20.0),
         width: 500,
       )),
       resizeToAvoidBottomInset: false,
@@ -65,30 +59,30 @@ class InputWidget extends StatefulWidget {
 /// This is the private State class that goes with MyStatefulWidget.
 class _InputWidget extends State<InputWidget> {
 
-  Institute _valueUniversity = Institute(id: 0, name: "Universidad");
-  Career _valueCareer = Career(id: 0, name: "Carrera");
-  Course _valueCourse = Course(id: 0, name: "Course");
-  Topic _valueTopic = Topic(id: 0, name: "Topico");
+  University _valueUniversity = University(id: 0, name: "none");
+  Career _valueCareer = Career(id: 0, name: "none");
+  Course _valueCourse = Course(id: 0, name: "none");
+  Topic _valueTopic = Topic(id: 0, name: "none");
 
   int topicId = 1;
 
-  List<Institute> _universities = [];
+  List<University> _universities = [];
   List<Career> _careers = [];
   List<Course> _courses = [];
   List<Topic> _topics = [];
-  List<StudyMaterial> _listDocuments = [];
 
-  bool _isLoadingValues = true;
+  //bool _isLoadingValues = true;
   bool _isLoadingCareersValues = false;
   bool _isLoadingCoursesValues = false;
   bool _isLoadingTopicsValues = false;
 
-  final InstituteService _instituteService = InstituteService();
+
+  final _universityService = UniversityService();
   final _careerService = CareerService();
   final _courseService = CourseService();
   final _topicService = TopicService();
-  final TopicMaterialService _topicMaterialService = TopicMaterialService();
-  final StudentMaterialService _studentMaterialService = StudentMaterialService();
+  final _topicMaterialService = TopicMaterialService();
+  final _studentMaterialService = StudentMaterialService();
 
   bool permissionGranted = false;
   bool showCharging = false;
@@ -100,9 +94,9 @@ class _InputWidget extends State<InputWidget> {
   final fileController = TextEditingController();
 
   //late SharedPreferences _prefs;
-  late UserPreferences _userPrefs = UserPreferences();
+  late final UserPreferences _userPrefs = UserPreferences();
   String _fileName = "no hay archivo seleccionado";
-  String? _filePath = null;
+  String? _filePath;
   double _sizeFile = 0.0;
 
   final String _dropboxClientId = 'app_studydesk';
@@ -113,7 +107,7 @@ class _InputWidget extends State<InputWidget> {
 
 
   //String _ProgressCount = "0.0/0.0";
-  double _percentage = 0.0;
+  //double _percentage = 0.0;
 
   @override
   void initState() {
@@ -139,33 +133,33 @@ class _InputWidget extends State<InputWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       child: Form(
         key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
-              child: Image(image: AssetImage("assets/texts/studydesk_title_logo.png")),
-              margin: EdgeInsets.only(top: 10),
+              child: const Image(image: AssetImage("assets/texts/studydesk_title_logo.png")),
+              margin: const EdgeInsets.only(top: 10),
             ),
             Container(
               child: const Text(
                 "Universidades",
                 style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
               ),
-              margin: EdgeInsets.only(top: 30),
+              margin: const EdgeInsets.only(top: 30),
             ),
             Container(
-              child: DropdownButton<Institute>(
+              child: DropdownButton<University>(
                 borderRadius: BorderRadius.circular(5),
                 menuMaxHeight: 550,
                 underline: const SizedBox(),
                 value: _valueUniversity,
                 isExpanded: true,
                 items: _universities
-                    .map<DropdownMenuItem<Institute>>((item) {
-                  return DropdownMenuItem<Institute>(
+                    .map<DropdownMenuItem<University>>((item) {
+                  return DropdownMenuItem<University>(
                     value: item,
                     child: Text(item.name),
                   );
@@ -182,77 +176,72 @@ class _InputWidget extends State<InputWidget> {
                   size: 25,
                 ),
               ),
-              margin: EdgeInsets.only(top: 5),
+              margin: const EdgeInsets.only(top: 5),
             ),
             Container(
               child: const Text(
                 "Carreras",
                 style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
               ),
-              margin: EdgeInsets.only(top: 30),
+              margin: const EdgeInsets.only(top: 30),
             ),
-            Container(
-              child: DropdownButton<Career>(
-                menuMaxHeight: 600,
-                disabledHint: Text(_valueCareer.name),
-                borderRadius: BorderRadius.circular(5),
-                underline: const SizedBox(),
-                value: _valueCareer,
-                isExpanded: true,
-                items: _careers
-                    .map<DropdownMenuItem<Career>>((item) {
-                  return DropdownMenuItem<Career>(
-                    value: item,
-                    child: Text(item.name),
-                  );
-                }).toList(),
-                onChanged: (_isLoadingCareersValues || _valueCareer.name=="")? null :(value) {
-                  setState(() {
-                    _valueCareer = value!;
-                    _isLoadingCoursesValues = true;
-                    getCourses(_valueCareer.id);
-                  });
-                },
-                icon: const Icon(
-                  Icons.arrow_drop_down,
-                  size: 25,
-                ),
+            DropdownButton<Career>(
+              menuMaxHeight: 600,
+              disabledHint: Text(_valueCareer.name),
+              borderRadius: BorderRadius.circular(5),
+              underline: const SizedBox(),
+              value: _valueCareer,
+              isExpanded: true,
+              items: _careers
+                  .map<DropdownMenuItem<Career>>((item) {
+                return DropdownMenuItem<Career>(
+                  value: item,
+                  child: Text(item.name),
+                );
+              }).toList(),
+              onChanged: (_isLoadingCareersValues || _valueCareer.name=="")? null :(value) {
+                setState(() {
+                  _valueCareer = value!;
+                  _isLoadingCoursesValues = true;
+                  getCourses(_valueCareer.id);
+                });
+              },
+              icon: const Icon(
+                Icons.arrow_drop_down,
+                size: 25,
               ),
-
             ),
             Container(
               child: const Text(
                 "Cursos",
                 style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
               ),
-              margin: EdgeInsets.only(top: 30),
+              margin: const EdgeInsets.only(top: 30),
             ),
-            Container(
-              child: DropdownButton<Course>(
-                menuMaxHeight: 600,
-                disabledHint: Text(_valueCourse.name),
-                borderRadius: BorderRadius.circular(5),
-                underline: const SizedBox(),
-                value: _valueCourse,
-                isExpanded: true,
-                items: _courses
-                    .map<DropdownMenuItem<Course>>((item) {
-                  return DropdownMenuItem<Course>(
-                    value: item,
-                    child: Text(item.name),
-                  );
-                }).toList(),
-                onChanged: (_isLoadingCoursesValues || _valueCourse.name=="")? null :(value) {
-                  setState(() {
-                    _valueCourse = value!;
-                    _isLoadingTopicsValues = true;
-                    getTopics(_valueCourse.id);
-                  });
-                },
-                icon: const Icon(
-                  Icons.arrow_drop_down,
-                  size: 25,
-                ),
+            DropdownButton<Course>(
+              menuMaxHeight: 600,
+              disabledHint: Text(_valueCourse.name),
+              borderRadius: BorderRadius.circular(5),
+              underline: const SizedBox(),
+              value: _valueCourse,
+              isExpanded: true,
+              items: _courses
+                  .map<DropdownMenuItem<Course>>((item) {
+                return DropdownMenuItem<Course>(
+                  value: item,
+                  child: Text(item.name),
+                );
+              }).toList(),
+              onChanged: (_isLoadingCoursesValues || _valueCourse.name=="")? null :(value) {
+                setState(() {
+                  _valueCourse = value!;
+                  _isLoadingTopicsValues = true;
+                  getTopics(_valueCourse.id);
+                });
+              },
+              icon: const Icon(
+                Icons.arrow_drop_down,
+                size: 25,
               ),
             ),
             Container(
@@ -260,33 +249,31 @@ class _InputWidget extends State<InputWidget> {
                 "Topicos",
                 style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
               ),
-              margin: EdgeInsets.only(top: 30),
+              margin: const EdgeInsets.only(top: 30),
             ),
-            Container(
-              child: DropdownButton<Topic>(
-                menuMaxHeight: 600,
-                disabledHint: Text(_valueTopic.name),
-                borderRadius: BorderRadius.circular(5),
-                underline: const SizedBox(),
-                value: _valueTopic,
-                isExpanded: true,
-                items: _topics
-                    .map<DropdownMenuItem<Topic>>((item) {
-                  return DropdownMenuItem<Topic>(
-                    value: item,
-                    child: Text(item.name),
-                  );
-                }).toList(),
-                onChanged: (_isLoadingCoursesValues || _valueTopic.name=="")? null :(value) {
-                  setState(() {
-                    _valueTopic = value!;
-                    topicId = value.id;
-                  });
-                },
-                icon: const Icon(
-                  Icons.arrow_drop_down,
-                  size: 25,
-                ),
+            DropdownButton<Topic>(
+              menuMaxHeight: 600,
+              disabledHint: Text(_valueTopic.name),
+              borderRadius: BorderRadius.circular(5),
+              underline: const SizedBox(),
+              value: _valueTopic,
+              isExpanded: true,
+              items: _topics
+                  .map<DropdownMenuItem<Topic>>((item) {
+                return DropdownMenuItem<Topic>(
+                  value: item,
+                  child: Text(item.name),
+                );
+              }).toList(),
+              onChanged: (_isLoadingCoursesValues || _valueTopic.name=="")? null :(value) {
+                setState(() {
+                  _valueTopic = value!;
+                  topicId = value.id;
+                });
+              },
+              icon: const Icon(
+                Icons.arrow_drop_down,
+                size: 25,
               ),
             ),
             Container(
@@ -305,7 +292,7 @@ class _InputWidget extends State<InputWidget> {
                   return null;
                 },
               ),
-              margin: EdgeInsets.only(top: 30),
+              margin: const EdgeInsets.only(top: 30),
             ),
             Container(
               child: TextFormField(
@@ -323,7 +310,7 @@ class _InputWidget extends State<InputWidget> {
                   return null;
                 },
               ),
-              margin: EdgeInsets.only(top: 30),
+              margin: const EdgeInsets.only(top: 30),
             ),
             Center(
               child: Padding(
@@ -332,7 +319,7 @@ class _InputWidget extends State<InputWidget> {
               ),
               //margin: EdgeInsets.only(top: 50),
             ),
-            Container(
+            SizedBox(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: (_filePath == null)? ElevatedButton(
@@ -348,7 +335,7 @@ class _InputWidget extends State<InputWidget> {
               ),
               width: 500,
             ),
-            Container(
+            SizedBox(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 0),
                 child: ElevatedButton(
@@ -359,7 +346,7 @@ class _InputWidget extends State<InputWidget> {
               ),
               width: 500,
             ),
-            SizedBox(height: 100,)
+            const SizedBox(height: 100,)
 
           ],
         ),
@@ -370,10 +357,10 @@ class _InputWidget extends State<InputWidget> {
 
   }
   void getUniversities() async {
-    var univResponse = await _instituteService.getAllInstitutes();
+    var univResponse = await _universityService.getAllUniversities();
     setState(() {
-      _universities = (univResponse['institutes'] as List)
-          .map((item) => Institute.fromJson(item)).toList();
+      _universities = (univResponse['universities'] as List)
+          .map((item) => University.fromJson(item)).toList();
 
       _valueUniversity = _universities.first;
     });
@@ -381,7 +368,7 @@ class _InputWidget extends State<InputWidget> {
     getCareers(_valueUniversity.id);
   }
   void getCareers(int id) async {
-    var careerResponse = await _careerService.getCareersByInstituteId(id);
+    var careerResponse = await _careerService.getCareersByUniversityId(id);
     setState(() {
       if (careerResponse['ok']) {
         _careers = (careerResponse['careers'] as List)
@@ -437,24 +424,11 @@ class _InputWidget extends State<InputWidget> {
     _isLoadingTopicsValues = false;
   }
 
-  void _getDocuments() async {
-    //Este es el topicId que seleccioné de un dropdown button
-    setState(() {
-      showCharging = true;
-    });
-    Map<String,dynamic> response = await _topicMaterialService.getAllStudyMaterialsByTopicId(topicId);
-    setState(() {
-      showCharging = false;
-      _listDocuments = (response['studyMaterials'] as List).map((i) => StudyMaterial.fromJson(i)).toList();
-    });
-
-    //print(response);
-  }
 
   void _unselectFile() {
     setState(() {
       _filePath = null;
-      _percentage = 0.0;
+      //_percentage = 0.0;
       _fileName = "no hay archivo seleccionado";
     });
   }
@@ -469,7 +443,7 @@ class _InputWidget extends State<InputWidget> {
       //print(file.path);
 
       setState(() {
-        _percentage = 0.0;
+        //_percentage = 0.0;
         _fileName = file.name;
         _filePath = file.path!;
         _sizeFile = roundDouble(file.size*0.000001, 2);
@@ -486,12 +460,12 @@ class _InputWidget extends State<InputWidget> {
 
     //Esta ruta la sacamos de Institute / Career / Course / Topic
 
-    final result = await Dropbox.upload(filepath,
+    await Dropbox.upload(filepath,
         '/${_valueUniversity.name}/${_valueCareer.name}/${_valueCourse.name}/${_valueTopic.name}/$_fileName',
             (uploaded, total) {
           setState(() {
             //_ProgressCount = '$uploaded / $total';
-            _percentage = uploaded/total;
+            //_percentage = uploaded/total;
 
             if(uploaded == total) {
 
@@ -538,7 +512,7 @@ class _InputWidget extends State<InputWidget> {
               size: _sizeFile)
       );
 
-      print(respStudyMat);
+      //print(respStudyMat);
 
       if(respStudyMat['ok']) {
         //registramos en db que pertenece a un usuario
@@ -546,7 +520,7 @@ class _InputWidget extends State<InputWidget> {
             StudentMaterial(studyMaterialId: respStudyMat['id'])
         );
 
-        print(respStudentMat);
+        //print(respStudentMat);
       }
 
 
@@ -557,7 +531,7 @@ class _InputWidget extends State<InputWidget> {
 
 
 
-Future<Document> postDocument(title, description, file) async {
+/*Future<Document> postDocument(title, description, file) async {
   var bodys = {
     "title": title,
     "description": description,
@@ -569,5 +543,5 @@ Future<Document> postDocument(title, description, file) async {
   }, body: jsonEncode(bodys));
 
   return documentsFromJson(res.body);
-}
+}*/
 

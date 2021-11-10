@@ -2,17 +2,19 @@ import 'dart:convert';
 import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:http/http.dart' as http;
 
-class UserService{
+class UserTutorService{
   final String _dataUrl = "https://studydeskapi.azurewebsites.net";
+  final UserPreferences _prefs = UserPreferences();
 
-  Future<Map<String,dynamic>> getUser(int id) async
+  Future<Map<String,dynamic>> getUserTutor(int id) async
   {
-    Uri url = Uri.parse('$_dataUrl/api/students/$id');
+    Uri url = Uri.parse('$_dataUrl/api/tutors/$id');
 
 
     final resp = await http.get(
         url,
-        headers: {"Content-Type": "application/json"},
+        headers: {"Content-Type": "application/json",
+          'Authorization': 'Bearer ${_prefs.token}'},
     );
 
 
@@ -20,10 +22,7 @@ class UserService{
 
     if(decodeResp.containsKey('name'))
     {
-      //Guardar su nombre xd, es que aun no nos enseña sqlLite
-      //y la libreria que conozco talvez sea diferente
 
-      //_prefs.Name = decodeResp['name'];
       return {'ok':true,'user':decodeResp};
     }
     else{

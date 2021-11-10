@@ -42,6 +42,8 @@ dependencies:
   dropbox_client: ^0.8.0
   file_picker: ^4.1.6
   permission_handler: ^6.1.1
+  sqflite: ^2.0.0+4
+  path: ^1.8.0
 
 dev_dependencies:
   flutter_test:
