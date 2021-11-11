@@ -31,4 +31,25 @@ class SessionService{
     }
 
   }
+
+  Future<Map<String,dynamic>> getSessionByTutorId(int tutorId) async{
+    Uri url = Uri.parse('$_dataUrl/api/tutors/$tutorId/sessions');
+
+    final resp = await http.get(
+        url,
+        headers: {"Content-Type": "application/json",
+          'Authorization': 'Bearer ${_prefs.token}'},
+    );
+
+
+    List<dynamic> decodeResp = json.decode(resp.body);
+
+
+    if(decodeResp.isNotEmpty){
+      return {'ok':true,'sessions':decodeResp};
+    }
+    else{
+      return {'ok':false,'message':decodeResp};
+    }
+  }
 }

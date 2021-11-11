@@ -10,6 +10,7 @@ String sessionToJson(Session data) => json.encode(data.toJson());
 
 class Session {
   Session({
+    this.id,
     required this.title,
     required this.logo,
     required this.description,
@@ -22,6 +23,7 @@ class Session {
     required this.topicId,
   });
 
+  int?id;
   String title;
   String logo;
   String description;
@@ -34,13 +36,14 @@ class Session {
   int topicId;
 
   factory Session.fromJson(Map<String, dynamic> json) => Session(
+    id:json["id"],
     title: json["title"],
     logo: json["logo"],
     description: json["description"],
     startDate: DateTime.parse(json["startDate"]),
     endDate: DateTime.parse(json["endDate"]),
     quantityMembers: json["quantityMembers"],
-    price: json["price"],
+    price: json["price"].toDouble(),
     categoryId: json["categoryId"],
     platformId: json["platformId"],
     topicId: json["topicId"],
