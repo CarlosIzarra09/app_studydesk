@@ -43,7 +43,8 @@ class TopicMaterialService{
 
     final resp = await http.post(
         url,
-        headers: {"Content-Type": "application/json"},
+        headers: {"Content-Type": "application/json",
+          'Authorization': 'Bearer ${_prefs.token}'},
         body: studyMaterialToJson(model)
     );
 

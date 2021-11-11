@@ -7,6 +7,7 @@ String userTutorToJson(UserTutor data) => json.encode(data.toJson());
 class UserTutor {
   UserTutor({
     this.id,
+    required this.courseId,
     required this.name,
     required this.lastName,
     required this.logo,
@@ -17,6 +18,7 @@ class UserTutor {
   });
 
   int? id;
+  int courseId;
   String name;
   String lastName;
   String description;
@@ -27,6 +29,7 @@ class UserTutor {
 
   factory UserTutor.fromJson(Map<String, dynamic> json) => UserTutor(
     id: json["id"],
+    courseId: json["courseId"],
     name: json["name"],
     lastName: json["lastName"],
     logo: json["logo"],
@@ -38,6 +41,7 @@ class UserTutor {
 
   Map<String, dynamic> toJson() => {
     "id": id,
+    "courseId":courseId,
     "name": name,
     "lastName": lastName,
     "logo": logo,
@@ -49,6 +53,7 @@ class UserTutor {
 
   factory UserTutor.fromDatabaseJson(Map<String, dynamic> json) => UserTutor(
       id: json["id"],
+      courseId: json["courseId"],
       name: json["name"],
       lastName: json["lastName"],
       logo: json["logo"],
@@ -60,6 +65,7 @@ class UserTutor {
 
   Map<String, dynamic> toDatabaseJson() => {
     "id": id,
+    "courseId":courseId,
     "name": name,
     "lastName": lastName,
     "logo": logo,

@@ -33,6 +33,7 @@ class DbHelper{
                 'isTutor INTEGER)');
             database.execute(''
                 'CREATE TABLE Tutors(id INTEGER PRIMARY KEY, '
+                'courseId INTEGER,'
                 'name TEXT, '
                 'lastName TEXT,'
                 'email TEXT,'

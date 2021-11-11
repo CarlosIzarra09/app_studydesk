@@ -16,7 +16,7 @@ class _HomePageState extends State<HomePage> {
 
   final UserPreferences _prefs = UserPreferences();
   UserStudent? userStudent = UserStudent(name: "", lastName: "", logo: "", email: "", password: "", isTutor: 0);
-  UserTutor? userTutor = UserTutor(name: "", lastName: "", logo: "", description: "", pricePerHour: 0.0, email: "", password: "");
+  UserTutor? userTutor = UserTutor(name: "",courseId: 0 ,lastName: "", logo: "", description: "", pricePerHour: 0.0, email: "", password: "");
 
   @override
   void initState() {
@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                       "Crea una sesión de tutoria, es rápido y sencillo",
                       const Color.fromRGBO(111, 208, 253, 1),
                       //manda tu ruta por aqui
-                      "/sesion-detail"),
+                      "/detail-session"),
                   _optionContainer(context,
                       "assets/images/tutoria_virtual.png",
                       "Mis sesiones",
@@ -169,7 +169,13 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () {
 
                         if(_prefs.lastPage != route) {
-                          Navigator.of(context).pushNamed(route);
+                          if(route == "/detail-session") {
+                            Navigator.of(context).pushNamed(
+                                route, arguments: userTutor);
+                          }
+                          else{
+                            Navigator.of(context).pushNamed(route);
+                          }
                         }
 
                       },
