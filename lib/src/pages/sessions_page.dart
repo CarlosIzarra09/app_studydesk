@@ -106,7 +106,7 @@ class _SessionsPageState extends State<SessionsPage> {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
             child: Card(
               elevation: 15,
-              color: Colors.blue,
+              color: Colors.blueAccent,
               clipBehavior: Clip.antiAlias,
               child: Padding(
                 padding:
@@ -198,8 +198,30 @@ class _SessionsPageState extends State<SessionsPage> {
                       height: 10,
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
+                        SizedBox(
+                          height: 35,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _showStudentsOfSession(sessions[index].id!);
+                            },
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Colors.indigo),
+                            ),
+                            child: Row(
+                              children: const <Widget>[
+                                Text(
+                                  "Subir Material",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Icon(Icons.upload_rounded)
+                              ],
+                            ),
+                          ),
+                        ),
                         SizedBox(
                           height: 35,
                           child: ElevatedButton(
