@@ -5,6 +5,7 @@ import 'package:app_studydesk/src/models/platform_session.dart';
 import 'package:app_studydesk/src/models/topic.dart';
 import 'package:app_studydesk/src/models/user_tutor.dart';
 import 'package:app_studydesk/src/services/category_service.dart';
+import 'package:app_studydesk/src/services/cloudinary_service.dart';
 import 'package:app_studydesk/src/services/topic_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,9 +22,10 @@ class AddDetailSessionPage extends StatefulWidget {
 class _AddDetailSessionPageState extends State<AddDetailSessionPage> {
   File? photo;
   final _imagePicker = ImagePicker();
-  Category _valueCategory = Category(id: 0, name: "none");
-  Topic _valueTopic = Topic(id: 0, name: "none");
-  PlatformSession _valuePlatform = PlatformSession(id: 0, name: "none", platformUrl: "");
+  Category _valueCategory = Category(id: 0, name: "");
+  Topic _valueTopic = Topic(id: 0, name: "");
+  PlatformSession _valuePlatform =
+      PlatformSession(id: 0, name: "", platformUrl: "");
 
   List<Topic> _topics = [];
   List<Category> _categories = [];
@@ -31,6 +33,7 @@ class _AddDetailSessionPageState extends State<AddDetailSessionPage> {
 
   final _topicService = TopicService();
   final _categoryService = CategoryService();
+  final CloudinaryService _cloudinaryService = CloudinaryService();
 
   @override
   void initState() {
@@ -135,7 +138,8 @@ class _AddDetailSessionPageState extends State<AddDetailSessionPage> {
   void getCategories() async {
     _platforms = [
       PlatformSession(id: 1, name: "Zoom", platformUrl: ""),
-      PlatformSession(id: 2, name: "Teams", platformUrl: ""),];
+      PlatformSession(id: 2, name: "Teams", platformUrl: ""),
+    ];
     _valuePlatform = _platforms.first;
     var categoryResponse = await _categoryService.getAllCategories();
     setState(() {
@@ -289,12 +293,8 @@ class _AddDetailSessionPageState extends State<AddDetailSessionPage> {
             height: 40,
           ),
           ElevatedButton(
-              onPressed: (){
-                Navigator.of(context).pushNamed("/add-session",
-                    arguments: {"Platform":_valuePlatform.name,
-                      "categoryId":_valueCategory.id,
-                      "topicId":_valueTopic.id,
-                    });
+              onPressed: () {
+                _passParametersToSessionPage();
               },
               child: const Text("Continuar registro"))
         ],
@@ -302,5 +302,18 @@ class _AddDetailSessionPageState extends State<AddDetailSessionPage> {
     );
   }
 
-
+  void _passParametersToSessionPage() async {
+    String urlImage =
+        "https://res.cloudinary.com/dwhagi5eg/image/upload/v1636674995/gjipugw9leeg9tae72e4.png";
+    if (photo != null) {
+      var value = await _cloudinaryService.uploadImage(photo!);
+      urlImage = value['secure_url'];
+    }
+    Navigator.of(context).pushNamed("/add-session", arguments: {
+      "Platform": _valuePlatform.name,
+      "categoryId": _valueCategory.id,
+      "topicId": _valueTopic.id,
+      "urlImage": urlImage
+    });
+  }
 }

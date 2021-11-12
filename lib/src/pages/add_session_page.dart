@@ -338,8 +338,7 @@ class _AddSessionPageState extends State<AddSessionPage> {
           if (platformResp["ok"]) {
             final session = Session(
                 title: _titleSession,
-                logo:
-                    "https://res.cloudinary.com/dwhagi5eg/image/upload/v1635370922/yb54dnadmoniavu7rwkf.jpg",
+                logo:widget.parametersSession["urlImage"],
                 description: _descriptionSession,
                 startDate: _startDate!,
                 endDate: _endDate!,
