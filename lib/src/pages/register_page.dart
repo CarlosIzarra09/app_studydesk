@@ -592,31 +592,38 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void getUniversities() async {
     var univResponse = await _universityService.getAllUniversities();
-    setState(() {
-      _universities = (univResponse['universities'] as List)
-          .map((item) => University.fromJson(item)).toList();
+    if (mounted) {
+      setState(() {
+        _universities = (univResponse['universities'] as List)
+            .map((item) => University.fromJson(item)).toList();
 
-      _valueUniversity = _universities.first;
-    });
+        _valueUniversity = _universities.first;
+        getCareers(_valueUniversity.id);
+      });
 
-    getCareers(_valueUniversity.id);
+    }
+
+
   }
 
   void getCareers(int id) async {
     var careerResponse = await _careerService.getCareersByUniversityId(id);
-    setState(() {
-      if (careerResponse['ok']) {
-        _careers = (careerResponse['careers'] as List)
-            .map((item) => Career.fromJson(item)).toList();
 
-        _valueCareer = _careers.first;
-      } else {
-        _careers = [
-          Career(id: 0, name: "")
-        ];
-        _valueCareer = _careers.first;
-      }
-    });
+    if (mounted) {
+      setState(() {
+        if (careerResponse['ok']) {
+          _careers = (careerResponse['careers'] as List)
+              .map((item) => Career.fromJson(item)).toList();
+
+          _valueCareer = _careers.first;
+        } else {
+          _careers = [
+            Career(id: 0, name: "")
+          ];
+          _valueCareer = _careers.first;
+        }
+      });
+    }
 
     _isLoadingValues = false;
   }

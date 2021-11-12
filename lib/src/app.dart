@@ -4,6 +4,7 @@ import 'package:app_studydesk/src/pages/add_detail_session_page.dart';
 import 'package:app_studydesk/src/pages/add_session_page.dart';
 import 'package:app_studydesk/src/pages/download_doc_page.dart';
 import 'package:app_studydesk/src/pages/sessions_page.dart';
+import 'package:app_studydesk/src/route_generator.dart';
 import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -39,39 +40,10 @@ class MyApp extends StatelessWidget {
 
 
       initialRoute: _prefs.lastPage,
-      onGenerateRoute: (RouteSettings settings){
-        return MaterialPageRoute(
-            builder:(BuildContext context) {
-              switch (settings.name){
-                case '/login':return const LoginPage();
-                case '/register':return const RegisterPage();
-                case '/home':return const HomePage();
-                case '/upload': return const UploadDocumentsPage();
-                case '/download': return const DownloadPage();
-                case '/add-session':
-                  final Map parameters = (settings.arguments as Map);
-                  return AddSessionPage(parametersSession: parameters,);
-                case '/detail-session':
-                  final UserTutor tutor = (settings.arguments as UserTutor);
-                  return AddDetailSessionPage(userTutor: tutor,);
-                case '/sessions':return const SessionsPage();
-                default: {
-                  return const HomePage();
-                }
-              }
-            }
-        );
-      },
-      /*routes: {
-        '/login':(BuildContext context)=>const LoginPage(),
-        '/register':(BuildContext context)=>const RegisterPage(),
-        '/home':(BuildContext context)=>const HomePage(),
-        '/upload': (BuildContext context) => const UploadDocumentsPage(),
-        '/download': (BuildContext context) => const DownloadPage(),
-        '/add-session':(BuildContext context) => const AddSessionPage(),
-        '/detail-session':(BuildContext context) => const AddDetailSessionPage(),
-        '/sessions':(BuildContext context) => const SessionsPage(),
-      },*/
+      onGenerateRoute: RouteGenerator.generateRoute,
+
     );
   }
+
+
 }
