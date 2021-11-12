@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -28,6 +29,28 @@ class UserTutorService{
     else{
       //no guardo el usuario o ya existe
       return {'ok':false,'message':decodeResp};
+    }
+  }
+
+  Future<Map<String,dynamic>> getAllTutorsByCourseId(int id) async {
+
+    Uri url = Uri.parse('$_dataUrl/api/courses/$id/tutors');
+
+    final resp = await http.get(
+      url,
+      headers: {"Content-Type": "application/json",
+        'Authorization': 'Bearer ${_prefs.token}'},
+    );
+
+    final decodeResp = json.decode(resp.body);
+    print(decodeResp);
+    if(decodeResp.isNotEmpty)
+    {
+      return {'ok':true,'userTutors':decodeResp};
+    }
+    else{
+
+      return {'ok':false,'userTutors':[]};
     }
   }
 }
