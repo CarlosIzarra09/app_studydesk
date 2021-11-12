@@ -2,8 +2,11 @@ import 'package:app_studydesk/src/models/career.dart';
 import 'package:app_studydesk/src/models/course.dart';
 import 'package:app_studydesk/src/models/university.dart';
 import 'package:app_studydesk/src/models/topic.dart';
+import 'package:app_studydesk/src/models/user_tutor.dart';
 import 'package:app_studydesk/src/services/career_service.dart';
+import 'package:app_studydesk/src/services/user_tutor_service.dart';
 import 'package:dropbox_client/dropbox_client.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:app_studydesk/src/models/study_material.dart';
@@ -27,20 +30,25 @@ class _DownloadPageState extends State<DownloadPage> {
 
   int topicId = 1;
 
+  int courseId = 1;
+
   final _universityService = UniversityService();
   final _careerService = CareerService();
   final _courseService = CourseService();
   final _topicService = TopicService();
   final _topicMaterialService = TopicMaterialService();
+  final _tutorService = UserTutorService();
 
   List<University> _universities = [];
   List<Career> _careers = [];
   List<Course> _courses = [];
   List<Topic> _topics = [];
   List<StudyMaterial> _listDocuments = [];
+  List<UserTutor> _listTutors = [];
 
   bool _isLoadingCareersValues = false;
   bool _isLoadingCoursesValues = false;
+  bool  _isSearchTutors = false;
 
 
 
@@ -226,7 +234,9 @@ class _DownloadPageState extends State<DownloadPage> {
                     }).toList(),
                     onChanged: (_isLoadingCoursesValues || _valueCourse.name=="")? null :(value) {
                       setState(() {
+                        _listTutors=[];
                         _valueCourse = value!;
+                        courseId = value.id;
                         getTopics(_valueCourse.id);
                       });
                     },
@@ -294,12 +304,17 @@ class _DownloadPageState extends State<DownloadPage> {
             ElevatedButton(onPressed: _getDocuments,
                 child: const Text('Obtener documentos')),
             const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(onPressed: _getTutors,
+                child: const Text('Obtener tutores')),
+            const SizedBox(
               height: 30,
             ),
             Expanded(
               child: (showCharging)? const Center(
                 child: CircularProgressIndicator(strokeWidth: 6,),
-              ) :_listviewDocuments(context),
+              ) : (!_isSearchTutors) ? _listviewDocuments(context) : _listviewTutors(context),
             )
           ],
         ),
@@ -326,6 +341,17 @@ class _DownloadPageState extends State<DownloadPage> {
             title: Text(_listDocuments.elementAt(index).fileName),
           );*/
         }
+    );
+  }
+
+  Widget _listviewTutors(BuildContext context) {
+    return ListView.builder(
+      itemCount: _listTutors.length,
+
+      itemBuilder: (BuildContext context, int index) {
+        final UserTutor item = _listTutors.elementAt(index);
+        return CardTutor(item.logo, item.name, item.description);
+      }
     );
   }
 
@@ -400,6 +426,7 @@ class _DownloadPageState extends State<DownloadPage> {
     //Este es el topicId que seleccioné de un dropdown button
     setState(() {
       showCharging = true;
+      _isSearchTutors = false;
     });
     Map<String,dynamic> response = await _topicMaterialService.getAllStudyMaterialsByTopicId(topicId);
     setState(() {
@@ -408,6 +435,19 @@ class _DownloadPageState extends State<DownloadPage> {
     });
 
     //print(response);
+  }
+
+  void _getTutors() async {
+    setState(() {
+      showCharging = true;
+      _isSearchTutors = true;
+    });
+
+    Map<String,dynamic> response = await _tutorService.getAllTutorsByCourseId(courseId);
+    setState(() {
+      showCharging = false;
+      _listTutors = (response['userTutors'] as List).map( (i) => UserTutor.fromJson(i)).toList();
+    });
   }
 
   Widget CardDocument(String fileName,
@@ -467,6 +507,87 @@ class _DownloadPageState extends State<DownloadPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget CardTutor(String logo, String name, String description) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 50),
+      child: Card(
+        elevation: 10,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Column(
+              children: [
+                Row(
+                  children: [
+                    Row(
+                      children: <Widget>[
+                        Image.network(
+                          logo,
+                          fit: BoxFit.cover,
+                          width: 100,
+                          height: 100,
+                        )
+                      ],
+                    ),
+                    Container(
+                      width: 150,
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget> [
+                            const SizedBox(height: 20,),
+                            Text(name,
+                              style: const TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.fade,
+                            ),
+                            const SizedBox(height: 20,),
+                            Text(description, textAlign: TextAlign.justify, overflow: TextOverflow.ellipsis,)
+                          ]
+                      ),
+                    ),
+                  ],
+                ),
+
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    ElevatedButton(onPressed: () => {
+
+                    },
+                      child: Row(
+                        children: const <Widget>[
+                          Text('Ver Datos'),
+                          SizedBox(width: 10,),
+                          Icon(Icons.data_usage),
+                        ],
+
+                      ),
+                    ),
+                    ElevatedButton(onPressed: () => {
+
+                    },
+                      child: Row(
+                        children: const <Widget>[
+                          Text('Ver Sesiones'),
+                          SizedBox(width: 10,),
+                          Icon(Icons.tv)
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+
+          ],
+        ),
+      )
+
     );
   }
 
