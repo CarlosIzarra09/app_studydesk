@@ -350,7 +350,7 @@ class _DownloadPageState extends State<DownloadPage> {
 
       itemBuilder: (BuildContext context, int index) {
         final UserTutor item = _listTutors.elementAt(index);
-        return CardTutor(item.logo, item.name, item.description);
+        return CardTutor(item.logo, item.name, item.description, item.id!);
       }
     );
   }
@@ -510,81 +510,82 @@ class _DownloadPageState extends State<DownloadPage> {
     );
   }
 
-  Widget CardTutor(String logo, String name, String description) {
+  Widget CardTutor(String logo, String name, String description, int tutorId) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 50),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Card(
+        margin: EdgeInsets.only(bottom: 20),
         elevation: 10,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Column(
-              children: [
-                Row(
-                  children: [
-                    Row(
-                      children: <Widget>[
-                        Image.network(
-                          logo,
-                          fit: BoxFit.cover,
-                          width: 100,
-                          height: 100,
-                        )
-                      ],
-                    ),
-                    Container(
-                      width: 150,
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget> [
-                            const SizedBox(height: 20,),
-                            Text(name,
-                              style: const TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.center,
-                              overflow: TextOverflow.fade,
-                            ),
-                            const SizedBox(height: 20,),
-                            Text(description, textAlign: TextAlign.justify, overflow: TextOverflow.ellipsis,)
-                          ]
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Image.network(
+                        logo,
+                        fit: BoxFit.cover,
+                        width: 100,
+                        height: 100,
                       ),
-                    ),
-                  ],
-                ),
-
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    ElevatedButton(onPressed: () => {
-
-                    },
-                      child: Row(
-                        children: const <Widget>[
-                          Text('Ver Datos'),
-                          SizedBox(width: 10,),
-                          Icon(Icons.data_usage),
-                        ],
-
+                      Container(
+                        width: 150,
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget> [
+                              const SizedBox(height: 20,),
+                              Text(name,
+                                style: const TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.fade,
+                              ),
+                              const SizedBox(height: 20,),
+                              Text(description, textAlign: TextAlign.justify, overflow: TextOverflow.ellipsis,)
+                            ]
+                        ),
                       ),
-                    ),
-                    ElevatedButton(onPressed: () => {
+                    ],
+                  ),
 
-                    },
-                      child: Row(
-                        children: const <Widget>[
-                          Text('Ver Sesiones'),
-                          SizedBox(width: 10,),
-                          Icon(Icons.tv)
-                        ],
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      ElevatedButton(onPressed: () => {
+
+                      },
+                        child: Row(
+                          children: const <Widget>[
+                            Text('Ver Datos'),
+                            SizedBox(width: 10,),
+                            Icon(Icons.data_usage),
+                          ],
+
+                        ),
                       ),
-                    ),
-                  ],
-                )
-              ],
-            ),
+                      ElevatedButton(onPressed: () => {
+                        Navigator.pushNamed(context, '/book-session', arguments: tutorId)
+                      },
+                        child: Row(
+                          children: const <Widget>[
+                            Text('Ver Sesiones'),
+                            SizedBox(width: 10,),
+                            Icon(Icons.tv)
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
 
-          ],
+            ],
+          ),
         ),
       )
 
