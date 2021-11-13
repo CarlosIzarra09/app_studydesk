@@ -8,15 +8,15 @@ import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 
-class SessionsPage extends StatefulWidget {
-  const SessionsPage({Key? key, this.tutorId}) : super(key: key);
+class BookSessionPage extends StatefulWidget {
+  const BookSessionPage({Key? key, this.tutorId}) : super(key: key);
   final int? tutorId;
 
   @override
-  _SessionsPageState createState() => _SessionsPageState();
+  _BookSessionPageState createState() => _BookSessionPageState();
 }
 
-class _SessionsPageState extends State<SessionsPage> {
+class _BookSessionPageState extends State<BookSessionPage> {
   final _sessionService = SessionService();
   final _prefs = UserPreferences();
 
@@ -187,8 +187,7 @@ class _SessionsPageState extends State<SessionsPage> {
                           height: 35,
                           child: ElevatedButton(
                               onPressed: () {
-                                _showPlatformUrl(
-                                    sessions[index].platformId);
+                                _reserveSession(sessions[index].id!);
                               },
                               style: ButtonStyle(
                                 backgroundColor:
@@ -351,6 +350,24 @@ class _SessionsPageState extends State<SessionsPage> {
             );
           });
     }
+  }
+
+  void _reserveSession(int sessionId) async{
+    int tutorId = widget.tutorId!;
+    int session_id = sessionId;
+    // TODO SERVICE_SESSIONTUTOR
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: const Duration(seconds: 2),
+        content:
+        Row(
+            children: const <Widget>[
+              Icon(Icons.thumb_up,color: Colors.white,),
+              SizedBox(width: 20),
+              Text('Se completó la reserva!')
+            ]
+        )
+    ));
+    Navigator.of(context).pop();
   }
 }
 class TutorDetails extends StatelessWidget {

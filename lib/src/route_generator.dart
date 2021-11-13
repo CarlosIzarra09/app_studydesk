@@ -1,5 +1,6 @@
 import 'package:app_studydesk/src/pages/add_detail_session_page.dart';
 import 'package:app_studydesk/src/pages/add_session_page.dart';
+import 'package:app_studydesk/src/pages/book_session_page.dart';
 import 'package:app_studydesk/src/pages/download_doc_page.dart';
 import 'package:app_studydesk/src/pages/home_page.dart';
 import 'package:app_studydesk/src/pages/login_page.dart';
@@ -25,6 +26,9 @@ class RouteGenerator{
         final UserTutor tutor = (settings.arguments as UserTutor);
         return MaterialPageRoute(builder: (context)=> AddDetailSessionPage(userTutor: tutor,) );
       case '/sessions':return MaterialPageRoute(builder: (context)=> const SessionsPage() );
+      case '/book-session':
+        final int tutorId = (settings.arguments as int);
+        return MaterialPageRoute(builder: (context)=> BookSessionPage(tutorId: tutorId,) );
       default: return _errorRoute();
 
     }
