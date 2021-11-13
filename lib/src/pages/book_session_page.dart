@@ -1,8 +1,10 @@
 import 'package:app_studydesk/src/models/platform_session.dart';
 import 'package:app_studydesk/src/models/session.dart';
+import 'package:app_studydesk/src/models/session_student.dart';
 import 'package:app_studydesk/src/models/user_student.dart';
 import 'package:app_studydesk/src/services/platform_service.dart';
 import 'package:app_studydesk/src/services/session_service.dart';
+import 'package:app_studydesk/src/services/student_sessions_service.dart';
 import 'package:app_studydesk/src/services/user_student_service.dart';
 import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -353,9 +355,10 @@ class _BookSessionPageState extends State<BookSessionPage> {
   }
 
   void _reserveSession(int sessionId) async{
-    int tutorId = widget.tutorId!;
+    int studentId = _prefs.id!;
     int session_id = sessionId;
-    // TODO SERVICE_SESSIONTUTOR
+    StudentSessionService studentSessionService = new StudentSessionService();
+    studentSessionService.postStudentSessionByTutorId(studentId, sessionId, SessionStudent(qualification: 0, confirmed: true));
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         duration: const Duration(seconds: 2),
         content:
