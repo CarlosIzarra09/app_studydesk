@@ -99,7 +99,7 @@ class _AddDetailSessionPageState extends State<AddDetailSessionPage> {
               ),
               child: const Icon(
                 Icons.photo_camera,
-                size: 30,
+                size: 44,
               ),
               onPressed: _selectImage,
             ),
