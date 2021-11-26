@@ -6,6 +6,7 @@ import 'package:app_studydesk/src/pages/home_page.dart';
 import 'package:app_studydesk/src/pages/login_page.dart';
 import 'package:app_studydesk/src/pages/register_page.dart';
 import 'package:app_studydesk/src/pages/sessions_page.dart';
+import 'package:app_studydesk/src/pages/student_sessions_page.dart';
 import 'package:app_studydesk/src/pages/upload_doc_page.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +27,8 @@ class RouteGenerator{
         final UserTutor tutor = (settings.arguments as UserTutor);
         return MaterialPageRoute(builder: (context)=> AddDetailSessionPage(userTutor: tutor,) );
       case '/sessions':return MaterialPageRoute(builder: (context)=> const SessionsPage() );
+      case '/student-session':return MaterialPageRoute(builder: (context)=> const StudentSessionsPage());
+
       case '/book-session':
         final int tutorId = (settings.arguments as int);
         return MaterialPageRoute(builder: (context)=> BookSessionPage(tutorId: tutorId,) );
