@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -43,7 +42,6 @@ class UserTutorService{
     );
 
     final decodeResp = json.decode(resp.body);
-    print(decodeResp);
     if(decodeResp.isNotEmpty)
     {
       return {'ok':true,'userTutors':decodeResp};
