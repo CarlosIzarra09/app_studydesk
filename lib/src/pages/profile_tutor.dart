@@ -1,5 +1,7 @@
+import 'package:app_studydesk/src/models/topic.dart';
 import 'package:app_studydesk/src/models/user_tutor.dart';
 import 'package:app_studydesk/src/services/platform_service.dart';
+import 'package:app_studydesk/src/services/topic_service.dart';
 import 'package:app_studydesk/src/services/user_tutor_service.dart';
 import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,9 +18,12 @@ class ProfileTutorPage extends StatefulWidget {
 class _ProfileTutorPage extends State<ProfileTutorPage> {
   final _prefs = UserPreferences();
   final _tutorService = UserTutorService();
-
+  final _topicService = TopicService();
+  Topic _valueTopic = Topic(id: 0, name: "none");
+  String carreraTutor = "";
   @override
   void initState() {
+    _getCareerName(widget.userTutor.courseId);
     super.initState();
   }
 
@@ -26,6 +31,9 @@ class _ProfileTutorPage extends State<ProfileTutorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Mi Perfil"),
+      ),
       body: Stack(
         children: <Widget>[
           SizedBox.expand(
@@ -64,8 +72,8 @@ class _ProfileTutorPage extends State<ProfileTutorPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text("Josias Olaya", style: TextStyle(color: Colors.grey[800], fontFamily: "Doris-P",
-                                      fontSize: 36, fontWeight: FontWeight.w700
+                                  Text("${widget.userTutor.name} ${widget.userTutor.lastName}", style: TextStyle(color: Colors.grey[800], fontFamily: "Doris-P",
+                                      fontSize: 30, fontWeight: FontWeight.w700
                                   ),),
                                 ],
                               ),
@@ -91,7 +99,7 @@ class _ProfileTutorPage extends State<ProfileTutorPage> {
                                   children: <Widget>[
                                     Icon(Icons.account_balance_wallet_outlined, color: Colors.white, size: 30,),
                                     SizedBox(width: 4,),
-                                    Text("400 PE", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700,
+                                    Text("${widget.userTutor.pricePerHour} / Hora", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700,
                                         fontFamily: "Doris-P", fontSize: 24
                                     ),)
                                   ],
@@ -119,10 +127,10 @@ class _ProfileTutorPage extends State<ProfileTutorPage> {
                             ),),
 
                             SizedBox(height: 8,),
-                            Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                            Center(
+                              child: Text(widget.userTutor.description,
                               style: TextStyle(fontSize: 16),
-                            ),
-
+                            ),)
                           ],
                         ),
                       ),
@@ -136,15 +144,35 @@ class _ProfileTutorPage extends State<ProfileTutorPage> {
                             Text("Correo", style: TextStyle(fontWeight: FontWeight.w700,
                                 fontFamily: "Doris-P", fontSize: 22
                             ),),
-
                             SizedBox(height: 8,),
-                            //for list of clients
-                            Text("tutor@correo.com", style: TextStyle(fontSize: 18
-                            ),),
-
+                            Center(
+                              child: Text(widget.userTutor.email, style: TextStyle(fontSize: 18
+                              ),),
+                            ),
                           ],
                         ),
                       ),
+
+
+
+                      SizedBox(height: 54,),
+
+                      Container(
+                        padding: EdgeInsets.only(left: 32, right: 32),
+                        child: Column(
+                          children: <Widget>[
+                            Text("Carrera", style: TextStyle(fontWeight: FontWeight.w700,
+                                fontFamily: "Doris-P", fontSize: 22
+                            ),),
+                            SizedBox(height: 8,),
+                            Center(
+                              child: Text(carreraTutor, style: TextStyle(fontSize: 18
+                              ),),
+                            ),
+                          ],
+                        ),
+                      ),
+
                     ],
                   ),
 
@@ -161,10 +189,15 @@ class _ProfileTutorPage extends State<ProfileTutorPage> {
   //   return Lis
   // }
 
-  void _profileTutor(BuildContext context) async {
-    var TutorResponse = await _tutorService.getUserTutor(1);
-    final tutor = UserTutor.fromJson(TutorResponse["user"]);
-    print(tutor);
+  void _getCareerName(int courseId) async {
+    var topicResponse = await _topicService.getTopicByCourseId(courseId);
+    if (topicResponse['ok']) {
+      _valueTopic = (topicResponse['topics'] as List).map((e) => Topic.fromJson(e)).toList().first;
+      carreraTutor = _valueTopic.course!.career!.name;
+    } else {
+      _valueTopic = [
+        Topic(id: 0, name: "none")
+      ].first;
+    }
   }
-  
 }
