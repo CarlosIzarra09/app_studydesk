@@ -37,11 +37,8 @@ class MyApp extends StatelessWidget {
         Locale('en','US'),
         Locale('es','ES')
       ],
-
-
       initialRoute: _prefs.lastPage,
       onGenerateRoute: RouteGenerator.generateRoute,
-
     );
   }
 

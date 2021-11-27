@@ -4,6 +4,7 @@ import 'package:app_studydesk/src/pages/book_session_page.dart';
 import 'package:app_studydesk/src/pages/download_doc_page.dart';
 import 'package:app_studydesk/src/pages/home_page.dart';
 import 'package:app_studydesk/src/pages/login_page.dart';
+import 'package:app_studydesk/src/pages/profile_tutor.dart';
 import 'package:app_studydesk/src/pages/register_page.dart';
 import 'package:app_studydesk/src/pages/sessions_page.dart';
 import 'package:app_studydesk/src/pages/upload_doc_page.dart';
@@ -14,7 +15,7 @@ import 'models/user_tutor.dart';
 class RouteGenerator{
   static Route<dynamic> generateRoute(RouteSettings settings){
     switch (settings.name){
-      case '/login':return MaterialPageRoute(builder: (context)=> const LoginPage() ) ;
+      case '/login':return MaterialPageRoute(builder: (context)=> const ProfileTutorPage() ) ;
       case '/register':return MaterialPageRoute(builder: (context)=> const RegisterPage() );
       case '/home':return MaterialPageRoute(builder: (context)=> const HomePage() );
       case '/upload': return MaterialPageRoute(builder: (context)=> const UploadDocumentsPage() );
