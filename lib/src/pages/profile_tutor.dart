@@ -1,14 +1,13 @@
-import 'package:app_studydesk/src/models/tutor.dart';
 import 'package:app_studydesk/src/models/user_tutor.dart';
 import 'package:app_studydesk/src/services/platform_service.dart';
-import 'package:app_studydesk/src/services/tutor_service.dart';
 import 'package:app_studydesk/src/services/user_tutor_service.dart';
 import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ProfileTutorPage extends StatefulWidget {
-  const ProfileTutorPage({Key? key}) : super(key: key);
+  const ProfileTutorPage({Key? key, required this.userTutor}) : super(key: key);
+  final UserTutor userTutor;
 
   @override
   State<StatefulWidget> createState() => _ProfileTutorPage();
@@ -17,7 +16,6 @@ class ProfileTutorPage extends StatefulWidget {
 class _ProfileTutorPage extends State<ProfileTutorPage> {
   final _prefs = UserPreferences();
   final _tutorService = UserTutorService();
-  final _platformService = PlatformService();
 
   @override
   void initState() {
@@ -31,7 +29,7 @@ class _ProfileTutorPage extends State<ProfileTutorPage> {
       body: Stack(
         children: <Widget>[
           SizedBox.expand(
-            child: Image.asset("assets/images/login_fail.png", fit: BoxFit.cover,),
+            child: Image.network(widget.userTutor.logo, fit: BoxFit.cover,),
           ),
 
           DraggableScrollableSheet(
@@ -57,7 +55,7 @@ class _ProfileTutorPage extends State<ProfileTutorPage> {
                                 height: 100,
                                 width: 100,
                                 child: ClipOval(
-                                  child: Image.asset("assets/images/login_fail.png", fit: BoxFit.cover,),
+                                  child: Image.network(widget.userTutor.logo, fit: BoxFit.cover,),
                                 )
                             ),
 

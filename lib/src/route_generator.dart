@@ -15,7 +15,7 @@ import 'models/user_tutor.dart';
 class RouteGenerator{
   static Route<dynamic> generateRoute(RouteSettings settings){
     switch (settings.name){
-      case '/login':return MaterialPageRoute(builder: (context)=> const ProfileTutorPage() ) ;
+      case '/login':return MaterialPageRoute(builder: (context)=> const LoginPage() ) ;
       case '/register':return MaterialPageRoute(builder: (context)=> const RegisterPage() );
       case '/home':return MaterialPageRoute(builder: (context)=> const HomePage() );
       case '/upload': return MaterialPageRoute(builder: (context)=> const UploadDocumentsPage() );
@@ -27,6 +27,9 @@ class RouteGenerator{
         final UserTutor tutor = (settings.arguments as UserTutor);
         return MaterialPageRoute(builder: (context)=> AddDetailSessionPage(userTutor: tutor,) );
       case '/sessions':return MaterialPageRoute(builder: (context)=> const SessionsPage() );
+      case '/profile-tutor':
+        final UserTutor tutor = (settings.arguments as UserTutor);
+        return MaterialPageRoute(builder: (context)=> ProfileTutorPage(userTutor: tutor) );
       case '/book-session':
         final int tutorId = (settings.arguments as int);
         return MaterialPageRoute(builder: (context)=> BookSessionPage(tutorId: tutorId,) );

@@ -48,6 +48,10 @@ class DrawerWidget extends StatelessWidget {
             leading: const Icon(Icons.account_box),
             title: const Text('Mi perfil'),
             onTap: () {
+              Navigator.of(context).pop();
+              if(_prefs.isTutor) {
+                Navigator.of(context).pushNamed('/profile-tutor',arguments: userTutor);
+              }
               // Update the state of the app.
               // ...
             },
