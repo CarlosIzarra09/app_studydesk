@@ -15,18 +15,19 @@ import 'package:app_studydesk/src/services/university_service.dart';
 import 'package:app_studydesk/src/services/topic_material_service.dart';
 import 'package:app_studydesk/src/services/topic_service.dart';
 
-class DownloadPage extends StatefulWidget {
-  const DownloadPage({Key? key}) : super(key: key);
+class SearchPage extends StatefulWidget {
+  const SearchPage({Key? key}) : super(key: key);
 
   @override
-  _DownloadPageState createState() => _DownloadPageState();
+  _SearchPageState createState() => _SearchPageState();
 }
 
-class _DownloadPageState extends State<DownloadPage> {
+class _SearchPageState extends State<SearchPage> {
   University _valueUniversity = University(id: 0, name: "none");
   Career _valueCareer = Career(id: 0, name: "none");
   Course _valueCourse = Course(id: 0, name: "none");
   Topic _valueTopic = Topic(id: 0, name: "none");
+
 
   int topicId = 1;
 
@@ -49,7 +50,7 @@ class _DownloadPageState extends State<DownloadPage> {
   bool _isLoadingCareersValues = false;
   bool _isLoadingCoursesValues = false;
   bool  _isSearchTutors = false;
-
+  String _dropdownvalue = 'One';
 
 
 
@@ -87,16 +88,16 @@ class _DownloadPageState extends State<DownloadPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Buscar Archivos'),
+        title: const Text('Sistema de búsqueda'),
       ),
       //drawer:  DrawerWidget(),
       body: Container(
         padding: const EdgeInsets.only(top: 20),
         width: double.infinity,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          //crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            //Institutes -->>>>>>>>>>>>>>
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -112,7 +113,7 @@ class _DownloadPageState extends State<DownloadPage> {
                 ),
                 Container(
                   padding: const EdgeInsets.only(right: 30),
-                  width: 150,
+                  width: 200,
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(5)),
@@ -146,7 +147,7 @@ class _DownloadPageState extends State<DownloadPage> {
               ],
             ),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -163,7 +164,7 @@ class _DownloadPageState extends State<DownloadPage> {
                 ),
                 Container(
                   padding: const EdgeInsets.only(right: 30),
-                  width: 150,
+                  width: 200,
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(5)),
@@ -197,7 +198,7 @@ class _DownloadPageState extends State<DownloadPage> {
               ],
             ),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -214,7 +215,7 @@ class _DownloadPageState extends State<DownloadPage> {
                 ),
                 Container(
                   padding: const EdgeInsets.only(right: 30),
-                  width: 150,
+                  width: 200,
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(5)),
@@ -249,7 +250,7 @@ class _DownloadPageState extends State<DownloadPage> {
               ],
             ),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -266,7 +267,7 @@ class _DownloadPageState extends State<DownloadPage> {
                 ),
                 Container(
                   padding: const EdgeInsets.only(right: 30),
-                  width: 150,
+                  width: 200,
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(5)),
@@ -299,17 +300,52 @@ class _DownloadPageState extends State<DownloadPage> {
               ],
             ),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
-            ElevatedButton(onPressed: _getDocuments,
-                child: const Text('Obtener documentos')),
-            const SizedBox(
-              height: 20,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                ElevatedButton(onPressed: _getDocuments,
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(Colors.indigoAccent),),
+                    child: const Text('Obtener documentos')),
+                ElevatedButton(onPressed: _getTutors,
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurpleAccent),),
+                    child: const Text('Obtener tutores')),
+              ]
             ),
-            ElevatedButton(onPressed: _getTutors,
-                child: const Text('Obtener tutores')),
+            (_isSearchTutors) ? Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              width: 200,
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(5)),
+              child: DropdownButton<String>(
+                menuMaxHeight: 600,
+                borderRadius: BorderRadius.circular(5),
+                underline: const SizedBox(),
+                value: _dropdownvalue,
+                isExpanded: true,
+                items: <String>['One', 'Two', 'Free', 'Four']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (value){},
+                icon: const Icon(
+                  Icons.arrow_drop_down,
+                  size: 25,
+                ),
+              ),
+            )
+                :SizedBox(),
+
             const SizedBox(
-              height: 30,
+              height: 5,
             ),
             Expanded(
               child: (showCharging)? const Center(
@@ -326,6 +362,7 @@ class _DownloadPageState extends State<DownloadPage> {
     //return Container();
     //return FutureBuilder(builder: builder)
     return ListView.builder(
+
         itemCount:  _listDocuments.length,
 
         itemBuilder: (BuildContext context,int index){

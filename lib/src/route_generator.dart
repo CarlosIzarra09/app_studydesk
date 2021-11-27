@@ -1,12 +1,13 @@
 import 'package:app_studydesk/src/pages/add_detail_session_page.dart';
 import 'package:app_studydesk/src/pages/add_session_page.dart';
 import 'package:app_studydesk/src/pages/book_session_page.dart';
-import 'package:app_studydesk/src/pages/download_doc_page.dart';
+import 'package:app_studydesk/src/pages/search_page.dart';
 import 'package:app_studydesk/src/pages/home_page.dart';
 import 'package:app_studydesk/src/pages/login_page.dart';
 import 'package:app_studydesk/src/pages/profile_tutor.dart';
 import 'package:app_studydesk/src/pages/register_page.dart';
 import 'package:app_studydesk/src/pages/sessions_page.dart';
+import 'package:app_studydesk/src/pages/student_sessions_page.dart';
 import 'package:app_studydesk/src/pages/upload_doc_page.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +20,7 @@ class RouteGenerator{
       case '/register':return MaterialPageRoute(builder: (context)=> const RegisterPage() );
       case '/home':return MaterialPageRoute(builder: (context)=> const HomePage() );
       case '/upload': return MaterialPageRoute(builder: (context)=> const UploadDocumentsPage() );
-      case '/download': return MaterialPageRoute(builder: (context)=> const DownloadPage() );
+      case '/download': return MaterialPageRoute(builder: (context)=> const SearchPage() );
       case '/add-session':
         final Map parameters = (settings.arguments as Map);
         return MaterialPageRoute(builder: (context)=> AddSessionPage(parametersSession: parameters,) );
@@ -30,6 +31,7 @@ class RouteGenerator{
       case '/profile-tutor':
         final UserTutor tutor = (settings.arguments as UserTutor);
         return MaterialPageRoute(builder: (context)=> ProfileTutorPage(userTutor: tutor) );
+      case '/student-session':return MaterialPageRoute(builder: (context)=> const StudentSessionsPage());
       case '/book-session':
         final int tutorId = (settings.arguments as int);
         return MaterialPageRoute(builder: (context)=> BookSessionPage(tutorId: tutorId,) );
