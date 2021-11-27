@@ -32,7 +32,7 @@ class _ProfileTutorPage extends State<ProfileTutorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Mi Perfil"),
+        title: const Text("Perfil Tutor"),
       ),
       body: Stack(
         children: <Widget>[

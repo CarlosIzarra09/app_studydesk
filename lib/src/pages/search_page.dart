@@ -387,7 +387,7 @@ class _SearchPageState extends State<SearchPage> {
 
       itemBuilder: (BuildContext context, int index) {
         final UserTutor item = _listTutors.elementAt(index);
-        return CardTutor(item.logo, item.name, item.description, item.id!);
+        return CardTutor(item);
       }
     );
   }
@@ -547,7 +547,8 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget CardTutor(String logo, String name, String description, int tutorId) {
+  Widget CardTutor(UserTutor tutor) {
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Card(
@@ -565,7 +566,7 @@ class _SearchPageState extends State<SearchPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Image.network(
-                        logo,
+                        tutor.logo,
                         fit: BoxFit.cover,
                         width: 100,
                         height: 100,
@@ -576,14 +577,14 @@ class _SearchPageState extends State<SearchPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget> [
                               const SizedBox(height: 20,),
-                              Text(name,
+                              Text(tutor.name,
                                 style: const TextStyle(
                                     fontSize: 24, fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.center,
                                 overflow: TextOverflow.fade,
                               ),
                               const SizedBox(height: 20,),
-                              Text(description, textAlign: TextAlign.justify, overflow: TextOverflow.ellipsis,)
+                              Text(tutor.description, textAlign: TextAlign.justify, overflow: TextOverflow.ellipsis,)
                             ]
                         ),
                       ),
@@ -594,7 +595,7 @@ class _SearchPageState extends State<SearchPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       ElevatedButton(onPressed: () => {
-
+                        Navigator.pushNamed(context, '/profile-tutor', arguments: tutor)
                       },
                         child: Row(
                           children: const <Widget>[
@@ -606,7 +607,7 @@ class _SearchPageState extends State<SearchPage> {
                         ),
                       ),
                       ElevatedButton(onPressed: () => {
-                        Navigator.pushNamed(context, '/book-session', arguments: tutorId)
+                        Navigator.pushNamed(context, '/book-session', arguments: tutor.id)
                       },
                         child: Row(
                           children: const <Widget>[
