@@ -18,6 +18,8 @@ class Session {
     required this.endDate,
     required this.quantityMembers,
     required this.price,
+    this.qualification,
+    this.tutorId,
     required this.categoryId,
     required this.platformId,
     required this.topicId,
@@ -31,6 +33,8 @@ class Session {
   DateTime endDate;
   int quantityMembers;
   double price;
+  int? qualification;
+  int? tutorId;
   int categoryId;
   int platformId;
   int topicId;
@@ -44,6 +48,8 @@ class Session {
     endDate: DateTime.parse(json["endDate"]),
     quantityMembers: json["quantityMembers"],
     price: json["price"].toDouble(),
+    qualification: json["qualification"],
+    tutorId: json["tutorId"],
     categoryId: json["categoryId"],
     platformId: json["platformId"],
     topicId: json["topicId"],
@@ -57,6 +63,8 @@ class Session {
     "endDate": endDate.toIso8601String(),
     "quantityMembers": quantityMembers,
     "price": price,
+    "qualification":qualification,
+    "tutorId":tutorId,
     "categoryId": categoryId,
     "platformId": platformId,
     "topicId": topicId,

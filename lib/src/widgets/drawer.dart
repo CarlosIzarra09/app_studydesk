@@ -20,7 +20,7 @@ class DrawerWidget extends StatelessWidget {
         children: [
           UserAccountsDrawerHeader(
             decoration: const BoxDecoration(
-              color: Color(0xFF0062ac),
+              color: Colors.blue,
             ),
             accountName: (_prefs.isTutor)? Text(userTutor!.name):Text(userStudent!.name),
             accountEmail: (_prefs.isTutor)? Text(userTutor!.email):Text(userStudent!.email),
@@ -31,7 +31,7 @@ class DrawerWidget extends StatelessWidget {
             ),
           ),
 
-          ListTile(
+          /*ListTile(
             leading: const Icon(Icons.home),
             title: const Text('Principal'),
             onTap: () {
@@ -42,7 +42,7 @@ class DrawerWidget extends StatelessWidget {
               Navigator.of(context).pushNamed('/home');
 
             },
-          ),
+          ),*/
 
           ListTile(
             leading: const Icon(Icons.account_box),
@@ -54,6 +54,7 @@ class DrawerWidget extends StatelessWidget {
               }
               // Update the state of the app.
               // ...
+              Navigator.of(context).pop();
             },
           ),
 
@@ -63,6 +64,18 @@ class DrawerWidget extends StatelessWidget {
             onTap: () {
               // Update the state of the app.
               // ...
+              Navigator.of(context).pop();
+            },
+          ),
+
+          ListTile(
+            leading: const Icon(Icons.reduce_capacity_rounded),
+            title: const Text('Mis sesiones'),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+              Navigator.of(context).pop();
+              Navigator.of(context).pushNamed("/student-session");
             },
           ),
 
