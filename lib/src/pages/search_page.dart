@@ -50,7 +50,7 @@ class _SearchPageState extends State<SearchPage> {
   bool _isLoadingCareersValues = false;
   bool _isLoadingCoursesValues = false;
   bool  _isSearchTutors = false;
-  String _dropdownvalue = 'One';
+  String _dropdownvalue = '⭐';
 
 
 
@@ -315,32 +315,46 @@ class _SearchPageState extends State<SearchPage> {
                     child: const Text('Obtener tutores')),
               ]
             ),
-            (_isSearchTutors) ? Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              width: 200,
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(5)),
-              child: DropdownButton<String>(
-                menuMaxHeight: 600,
-                borderRadius: BorderRadius.circular(5),
-                underline: const SizedBox(),
-                value: _dropdownvalue,
-                isExpanded: true,
-                items: <String>['One', 'Two', 'Free', 'Four']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (value){},
-                icon: const Icon(
-                  Icons.arrow_drop_down,
-                  size: 25,
+            const SizedBox(
+              height: 10,
+            ),
+            (_isSearchTutors) ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("Filtrar por calificación",style: TextStyle(fontSize: 18),),
+                SizedBox(width: 10,),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  width: 180,
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(5)),
+                  child: DropdownButton<String>(
+                    menuMaxHeight: 600,
+                    borderRadius: BorderRadius.circular(5),
+                    underline: const SizedBox(),
+                    value: _dropdownvalue,
+                    isExpanded: true,
+                    items: <String>['⭐', '⭐⭐', '⭐⭐⭐', '⭐⭐⭐⭐','⭐⭐⭐⭐⭐']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (value){
+                      setState(() {
+                        _dropdownvalue = value!;
+                      });
+                    },
+                    icon: const Icon(
+                      Icons.arrow_drop_down,
+                      size: 25,
+                    ),
+                  ),
                 ),
-              ),
+              ],
             )
                 :SizedBox(),
 
@@ -382,13 +396,16 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _listviewTutors(BuildContext context) {
-    return ListView.builder(
-      itemCount: _listTutors.length,
+    return Padding(
+      padding: const EdgeInsets.only(top:10),
+      child: ListView.builder(
+        itemCount: _listTutors.length,
 
-      itemBuilder: (BuildContext context, int index) {
-        final UserTutor item = _listTutors.elementAt(index);
-        return CardTutor(item);
-      }
+        itemBuilder: (BuildContext context, int index) {
+          final UserTutor item = _listTutors.elementAt(index);
+          return CardTutor(item);
+        }
+      ),
     );
   }
 

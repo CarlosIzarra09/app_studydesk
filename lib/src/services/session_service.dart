@@ -121,4 +121,26 @@ class SessionService{
       return {'ok':false};
     }
   }
+
+
+  Future<Map<String,dynamic>> deleteSessionStudent(int studentId, int sessionId) async{
+    Uri url = Uri.parse('$_dataUrl/api/students/$studentId/sessions/$sessionId');
+
+    final resp = await http.delete(
+      url,
+      headers: {"Content-Type": "application/json",
+        'Authorization': 'Bearer ${_prefs.token}'},
+    );
+
+
+    Map<String,dynamic> decodeResp = json.decode(resp.body);
+
+
+    if(decodeResp.containsKey('qualification')){
+      return {'ok':true,'qualification':decodeResp['qualification']};
+    }
+    else{
+      return {'ok':false};
+    }
+  }
 }

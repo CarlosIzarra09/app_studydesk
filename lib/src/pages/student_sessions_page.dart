@@ -80,23 +80,19 @@ class _StudentSessionsPageState extends State<StudentSessionsPage> {
         .map((item) => Session.fromJson(item))
         .toList();
 
-    await Future.forEach(_sessions, (element) async {
-    });
+    await Future.forEach(_sessions, (element) async {});
 
-    for (var item in _sessions)  {
+    for (var item in _sessions) {
       item.qualification = await _getQualifySession(item.id!);
     }
 
     //_sessions.forEach((element) { })
     //const futures = _sessions.map((item) => _getQualifySession(item.id!));
-    
-
 
     return _sessions;
   }
 
   Widget _listCardSessions(List<Session> sessions) {
-
     return ListView.builder(
         itemCount: sessions.length,
         itemBuilder: (BuildContext context, int index) {
@@ -200,22 +196,58 @@ class _StudentSessionsPageState extends State<StudentSessionsPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                      StatefulBuilder(
-                        builder: (context, setState) {
-                          return StarRating(
-                            filledStar: Icons.star,
-                            unfilledStar: Icons.star_border,
-                            onChanged: (value) {
-
-                              setState(() {
-                                rating = value;
-                                _putQualifySession(sessions[index].id!, rating);
-                              });
-                            },
-                            value: rating,
-                          );
-                        },
-                      ),
+                        StatefulBuilder(
+                          builder: (context, setState) {
+                            return StarRating(
+                              filledStar: Icons.star,
+                              unfilledStar: Icons.star_border,
+                              onChanged: (value) {
+                                if (sessions[index]
+                                    .startDate
+                                    .isBefore(DateTime.now())) {
+                                  setState(() {
+                                    rating = value;
+                                    _putQualifySession(
+                                        sessions[index].id!, rating);
+                                  });
+                                } else {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: const Text(
+                                              'No es posible calificar esta sesión'),
+                                          content: SizedBox(
+                                            width: 300,
+                                            height: 150,
+                                            child: Column(
+                                              children: const <Widget>[
+                                                Icon(
+                                                  Icons.info_outline,
+                                                  size: 100,
+                                                ),
+                                                Text(
+                                                  "Esta sesión aún no ha concluido",
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text('Close')),
+                                          ],
+                                        );
+                                      });
+                                }
+                              },
+                              value: rating,
+                            );
+                          },
+                        ),
                       ],
                     ),
                     const SizedBox(
@@ -230,54 +262,26 @@ class _StudentSessionsPageState extends State<StudentSessionsPage> {
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold)),
                       ],
-                    )
-                    /*Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    ),
+                    SizedBox(height: 10,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        SizedBox(
-                          height: 35,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              _showStudentsOfSession(sessions[index].id!);
+                        ElevatedButton(
+                            onPressed: (){
+                              _deleteReservation(sessions[index].id!);
                             },
                             style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.indigo),
-                            ),
+                                backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
                             child: Row(
-                              children: const <Widget>[
-                                Text(
-                                  "Subir Material",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Icon(Icons.upload_rounded)
+                              children: const [
+                                Icon(Icons.exit_to_app_outlined),
+                                Text("Salir de la sesión")
                               ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 35,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              _showStudentsOfSession(sessions[index].id!);
-                            },
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.white),
-                              overlayColor: MaterialStateProperty.all<Color>(
-                                  const Color.fromRGBO(220, 220, 220, 1)),
-                            ),
-                            child: Text(
-                              "Vacantes totales: ${sessions[index].quantityMembers}",
-                              style: const TextStyle(
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
+                            ) )
                       ],
-                    )*/
+                    ),
+
                   ],
                 ),
               ),
@@ -286,19 +290,20 @@ class _StudentSessionsPageState extends State<StudentSessionsPage> {
         });
   }
 
-  Future<int> _getQualifySession(int sessionId) async{
-    var resp = await _sessionService.getQualificationSession(_prefs.id, sessionId);
-    if(resp["ok"]){
+  Future<int> _getQualifySession(int sessionId) async {
+    var resp =
+        await _sessionService.getQualificationSession(_prefs.id, sessionId);
+    if (resp["ok"]) {
       return resp["qualification"];
-    }
-    else{
+    } else {
       return 0;
     }
   }
 
-  void _putQualifySession(int sessionId,int rating) async{
-    var resp = await _sessionService.putQualificationSession(_prefs.id, sessionId, rating);
-    if(resp["ok"]){
+  void _putQualifySession(int sessionId, int rating) async {
+    var resp = await _sessionService.putQualificationSession(
+        _prefs.id, sessionId, rating);
+    if (resp["ok"]) {
       print("Se actualizó la sesión ${sessionId} de student ${_prefs.id}");
     }
   }
@@ -344,5 +349,22 @@ class _StudentSessionsPageState extends State<StudentSessionsPage> {
     }
   }
 
+  void _deleteReservation(int sessionId) async{
+    var resp = await _sessionService.deleteSessionStudent(_prefs.id, sessionId);
+    if (resp["ok"]){
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          duration: const Duration(seconds: 2),
+          content:
+          Row(
+              children: const <Widget>[
+                Icon(Icons.exit_to_app,color: Colors.white,),
+                SizedBox(width: 20),
+                Text('Se eliminó la reservación de tutoria')
+              ]
+          )
+      ));
+    }
 
+  }
 }

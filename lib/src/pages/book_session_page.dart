@@ -101,7 +101,14 @@ class _BookSessionPageState extends State<BookSessionPage> {
     }
   }
 
-  Widget _listCardSessions(List<Session> sessions) {
+  Widget _listCardSessions(List<Session> sessionsPrev) {
+    List<Session> sessions = [];
+    for(var item in sessionsPrev){
+      if(item.startDate.isAfter(DateTime.now())){
+        sessions.add(item);
+      }
+    }
+
     return ListView.builder(
         itemCount: sessions.length,
         itemBuilder: (BuildContext context, int index) {

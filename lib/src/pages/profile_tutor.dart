@@ -1,6 +1,5 @@
 import 'package:app_studydesk/src/models/topic.dart';
 import 'package:app_studydesk/src/models/user_tutor.dart';
-import 'package:app_studydesk/src/services/platform_service.dart';
 import 'package:app_studydesk/src/services/topic_service.dart';
 import 'package:app_studydesk/src/services/user_tutor_service.dart';
 import 'package:app_studydesk/src/share_preferences/user_preferences.dart';
@@ -41,13 +40,13 @@ class _ProfileTutorPage extends State<ProfileTutorPage> {
           ),
 
           DraggableScrollableSheet(
-            minChildSize: 0.1,
-            initialChildSize: 0.22,
+            minChildSize: 0.10,
+            initialChildSize: 0.30,
             builder: (context, scrollController){
               return SingleChildScrollView(
                 controller: scrollController,
                 child: Container(
-                  constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height),
+                  constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height-70),
                   color: Colors.white,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
